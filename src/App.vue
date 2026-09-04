@@ -9,7 +9,10 @@
       elevation="0"
     >
       <!-- Logo & App Title -->
-      <div class="sidebar-brand pa-4 pb-3">
+      <div
+        class="sidebar-brand pa-4 pb-3 cursor-pointer"
+        @click="router.push('/')"
+      >
         <div class="d-flex align-center ga-2 mb-1">
           <div class="brand-icon">
             <img src="/argo-logo.png" alt="Argo Logo" class="brand-logo" />
@@ -19,7 +22,7 @@
             <div class="brand-title">Center</div>
           </div>
         </div>
-        <div class="brand-subtitle">ระบบควบคุมและวิเคราะห์กระบวนการผลิต</div>
+        <!-- <div class="brand-subtitle">ระบบควบคุมและวิเคราะห์กระบวนการผลิต</div> -->
       </div>
 
       <v-divider class="border-opacity-10 mx-3 mb-2" />
@@ -30,6 +33,7 @@
           v-for="item in menuItems"
           :key="item.title"
           :to="item.to"
+          :exact="item.to === '/'"
           :prepend-icon="item.icon"
           :title="item.title"
           rounded="lg"
@@ -50,7 +54,7 @@
           <v-icon size="14" class="mx-1">mdi-chevron-right</v-icon>
         </span>
         <span class="breadcrumb-current">{{
-          currentItem?.title || "Industrial Analysis"
+          currentItem?.title || "Agro Fiber Control Center"
         }}</span>
       </div>
 
@@ -74,16 +78,17 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const drawer = ref(true);
 const route = useRoute();
+const router = useRouter();
 
 const menuItems = [
   {
-    title: "Dashboard",
-    icon: "mdi-view-dashboard-outline",
-    to: "/dashboard",
+    title: "หน้าหลัก",
+    icon: "mdi-home-outline",
+    to: "/",
     parent: null,
   },
   {
@@ -92,17 +97,21 @@ const menuItems = [
     to: "/machine-data",
     parent: null,
   },
-  // {
-  //   title: "Analysis",
-  //   icon: "mdi-chart-bar",
-  //   to: "/analysis-result",
-  //   parent: null,
-  // },
-  // { title: "History", icon: "mdi-history", to: "/history", parent: null },
+  {
+    title: "Dashboard",
+    icon: "mdi-view-dashboard-outline",
+    to: "/dashboard",
+    parent: null,
+  },
 ];
 
 const currentItem = computed(
-  () => menuItems.find((item) => route.path.startsWith(item.to)) || null,
+  () =>
+    menuItems.find(
+      (item) =>
+        route.path === item.to ||
+        (item.to !== "/" && route.path.startsWith(item.to)),
+    ) || null,
 );
 </script>
 
