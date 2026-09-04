@@ -12,9 +12,7 @@
     <div class="mb-6">
       <v-row>
         <v-col cols="12">
-          <div class="text-title-medium font-weight-bold">
-            1. Product
-          </div>
+          <div class="text-title-medium font-weight-bold">1. Product</div>
         </v-col>
       </v-row>
 
@@ -24,14 +22,13 @@
           <v-text-field
             v-model="formData.lot"
             type="number"
-            step="0.01"
             label="Lot"
-            placeholder="0.00"
+            placeholder="000"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
-            hint="Ex. 555"
+            hint="Ex. 377"
             persistent-hint
             clearable
           />
@@ -43,7 +40,7 @@
             v-model="formData.thickness"
             :items="thicknessOptions"
             label="Thickness"
-            placeholder="0.00"
+            placeholder="00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
@@ -95,7 +92,7 @@
             density="comfortable"
             rounded="lg"
             suffix="g"
-            hint="Ex. 555"
+            hint="Ex. 2.00 "
             persistent-hint
             clearable
           />
@@ -105,18 +102,27 @@
         <v-col cols="12" sm="6" md="4">
           <v-text-field
             v-model="formData.volume"
-            type="number"
-            step="0.01"
             label="Volume (ปริมาตร)"
-            placeholder="00"
+            suffix="ml"
+            hint="Ex. 41"
             persistent-placeholder
+            persistent-hint
+            clearable
             variant="outlined"
             density="comfortable"
             rounded="lg"
-            suffix="ml"
-            hint="Ex. 41"
-            persistent-hint
-            clearable
+            :rules="[
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) >= 40) ||
+                'ต้องไม่น้อยกว่า 40',
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) <= 50) ||
+                'ต้องไม่เกิน 50',
+            ]"
           />
         </v-col>
 
@@ -156,7 +162,6 @@
         <v-col cols="12" sm="6" md="3">
           <v-text-field
             v-model="formData.circulate"
-            type="number"
             label="1. Circulate"
             placeholder="00"
             persistent-placeholder
@@ -167,6 +172,18 @@
             hint="Ex. 65"
             persistent-hint
             clearable
+            :rules="[
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) >= 55) ||
+                'ต้องไม่น้อยกว่า 55',
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) <= 65) ||
+                'ต้องไม่เกิน 65',
+            ]"
           />
         </v-col>
 
@@ -183,17 +200,29 @@
             density="comfortable"
             rounded="lg"
             suffix="%"
-            hint="Ex. 11.8"
+            hint="Ex. 10"
             persistent-hint
             clearable
+            :rules="[
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) >= 10) ||
+                'ต้องไม่น้อยกว่า 10',
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) <= 20) ||
+                'ต้องไม่เกิน 20',
+            ]"
           />
         </v-col>
 
         <!-- 3. Damper 1 -->
         <v-col cols="12" sm="6" md="3">
-          <v-text-field
+          <v-select
             v-model="formData.damper1"
-            type="number"
+            :items="damperOptions"
             label="3. Damper 1"
             placeholder="00"
             persistent-placeholder
@@ -201,17 +230,15 @@
             density="comfortable"
             rounded="lg"
             suffix="mm"
-            hint="Ex. 30"
-            persistent-hint
             clearable
           />
         </v-col>
 
         <!-- 4. Damper 2 -->
         <v-col cols="12" sm="6" md="3">
-          <v-text-field
+          <v-select
             v-model="formData.damper2"
-            type="number"
+            :items="damperOptions"
             label="4. Damper 2"
             placeholder="00"
             persistent-placeholder
@@ -219,8 +246,6 @@
             density="comfortable"
             rounded="lg"
             suffix="mm"
-            hint="Ex. 30"
-            persistent-hint
             clearable
           />
         </v-col>
@@ -252,7 +277,7 @@
           variant="flat"
           rounded="lg"
           size="large"
-          class="bg-black"
+          class="bg-primary"
           prepend-icon="mdi-google-analytics"
           @click="handleSubmit"
         >
@@ -279,9 +304,10 @@ const emit = defineEmits<{
 
 const swal = useSwal();
 
-// ตัวเลือกสำหรับ Thickness และ Product
+// ตัวเลือกสำหรับ Thickness, Product และ Damper
 const thicknessOptions = [4, 6, 9, 12, 15, 18, 25];
 const productOptions = ["HMR AA"];
+const damperOptions = [30];
 
 // ข้อมูล Form เริ่มต้น
 const initialFormData: AnalysisFormData = {
@@ -298,8 +324,8 @@ const initialFormData: AnalysisFormData = {
   // 3. Sifter condition
   circulate: "",
   pressure: "",
-  damper1: "",
-  damper2: "",
+  damper1: null,
+  damper2: null,
 };
 
 const formData = ref<AnalysisFormData>({ ...initialFormData });
