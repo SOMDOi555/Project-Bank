@@ -214,7 +214,7 @@ const currentTime = ref("14:25 น.");
 
 // 1. นำทางไปหน้า Control Sifter (/machine-data)
 const startSifter = () => {
-  router.push("/machine-data");
+  router.push("/sifter");
 };
 
 // 2. Predict %MC Forming (จริง)
@@ -241,7 +241,7 @@ const handleMockModule = (name: string) => {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -4px;
+  bottom: -8px;
   width: 100%;
   height: 4px;
   background-color: #2a835f;

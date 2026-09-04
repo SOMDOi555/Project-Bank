@@ -14,20 +14,15 @@ const router = createRouter({
       component: () => import('@/pages/dashboard.vue'),
     },
     {
-      path: '/machine-data',
+      path: '/sifter',
       name: 'Control Sifter',
-      component: () => import('@/pages/machine-data.vue'),
+      component: () => import('@/pages/sifter.vue'),
     },
     {
       path: '/analysis-result',
       name: 'AnalysisResult',
       component: () => import('@/pages/analysis-result.vue'),
     },
-    // {
-    //   path: '/history',
-    //   name: 'History',
-    //   component: () => import('@/pages/history.vue'),
-    // },
   ],
 })
 

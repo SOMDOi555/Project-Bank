@@ -94,7 +94,7 @@ const menuItems = [
   {
     title: "Control Sifter",
     icon: "mdi-excavator",
-    to: "/machine-data",
+    to: "/sifter",
     parent: null,
   },
   {

@@ -17,7 +17,8 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import AnalysisForm from "@/components/AnalysisForm.vue";
-import type { Machine, AnalysisFormData } from "@/types/machine";
+import { analyzeSifter } from "@/utils/sifter";
+import type { Machine, AnalysisFormData, SifterAnalysisResult } from "@/types/machine";
 
 const router = useRouter();
 const isAnalyzing = ref(false);
@@ -40,15 +41,26 @@ const handleAnalyze = async (data: AnalysisFormData) => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
   isAnalyzing.value = false;
 
-  sessionStorage.setItem(
-    "analysisResult",
-    JSON.stringify({
-      machine: machineInfo,
-      formData: data,
-      analyzedAt: new Date().toISOString(),
-    }),
-  );
+  // คำนวณ Sifter Analysis
+  const weight = Number(data.weight);
+  const volume = Number(data.volume);
+  const circulate = Number(data.circulate);
+  const pressure = Number(data.pressure);
 
+  const sifterResult = analyzeSifter(weight, volume, circulate, pressure);
+
+  const analysisResult: SifterAnalysisResult = {
+    machine: machineInfo,
+    formData: data,
+    analyzedAt: new Date().toISOString(),
+    bulkDensity: sifterResult.bulkDensity,
+    bulkDensityStatus: sifterResult.bulkDensityStatus,
+    currentCombination: sifterResult.currentCombination,
+    reductionLevel: sifterResult.reductionLevel,
+    recommendedControlSifter: sifterResult.recommendedControlSifter,
+  };
+
+  sessionStorage.setItem("analysisResult", JSON.stringify(analysisResult));
   router.push("/analysis-result");
 };
 </script>

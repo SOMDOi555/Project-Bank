@@ -8,10 +8,6 @@
           <v-chip size="small" color="primary" variant="flat" class="font-mono">
             ID: {{ result?.machine?.id ? `MC-00${result.machine.id}` : 'MC-001' }}
           </v-chip>
-          <!-- <div class="d-flex align-center ga-1 text-grey">
-            <v-icon size="14">mdi-robot-industrial</v-icon>
-            <span class="meta-text">{{ result?.machine?.name || 'CNC Machine 01' }}</span>
-          </div> -->
           <div class="d-flex align-center ga-1 text-grey">
             <v-icon size="14">mdi-calendar</v-icon>
             <span class="meta-text">{{ analyzedDate }}</span>
@@ -22,79 +18,111 @@
         variant="outlined"
         color="grey-darken-2"
         rounded="lg"
-        prepend-icon="mdi-download"
+        prepend-icon="mdi-arrow-left"
         size="small"
+        @click="router.push('/sifter')"
       >
-        Export Report
+        กลับไปวิเคราะห์ใหม่
       </v-btn>
     </div>
 
-    <!-- Top Cards Row: Overall Health, Prediction Breakdown, Recommendation -->
+    <!-- Top Cards Row: Bulk Density, Current Sifter, Recommendation -->
     <v-row class="mb-6">
-      <!-- Overall Health -->
+      <!-- Bulk Density Result -->
       <v-col cols="12" md="4">
         <v-card rounded="lg" elevation="0" class="result-card h-100">
           <v-card-text class="pa-6 text-center">
             <div class="d-flex align-center ga-2 mb-4">
               <v-icon color="primary" size="18">mdi-google-analytics</v-icon>
-              <span class="section-title">ผลการวิเคราะห์</span>
+              <span class="section-title">Bulk Density</span>
             </div>
 
             <div class="gauge-container mb-4">
               <v-progress-circular
-                :model-value="healthScore"
+                :model-value="bulkDensityPercent"
                 :size="130"
                 :width="12"
-                color="primary"
+                :color="isNormal ? 'success' : 'warning'"
                 bg-color="#e2e8f0"
               >
                 <div>
-                  <div class="gauge-value">{{ healthScore }}%</div>
-                  <div :class="['gauge-status', `gauge-status--${healthStatus.type}`]">
-                    {{ healthStatus.label }}
+                  <div class="gauge-value">{{ bulkDensityDisplay }}</div>
+                  <div :class="['gauge-status', isNormal ? 'gauge-status--normal' : 'gauge-status--warning']">
+                    {{ isNormal ? 'ปกติ' : 'ผิดปกติ' }}
                   </div>
                 </div>
               </v-progress-circular>
             </div>
 
-            <p class="result-desc">Machine condition is stable.</p>
-            <p class="result-desc-sub">Confidence Score: {{ healthScore }}%</p>
+            <p class="result-desc">
+              {{ isNormal ? 'ค่า Bulk Density อยู่ในเกณฑ์ปกติ' : 'ค่า Bulk Density อยู่ในเกณฑ์ผิดปกติ' }}
+            </p>
+            <p class="result-desc-sub">
+              ช่วงปกติ: 39.00 – 43.00
+            </p>
           </v-card-text>
         </v-card>
       </v-col>
 
-      <!-- Prediction Breakdown -->
+      <!-- Current Sifter Combination -->
       <v-col cols="12" md="4">
         <v-card rounded="lg" elevation="0" class="result-card h-100">
           <v-card-text class="pa-6">
             <div class="d-flex align-center ga-2 mb-5">
               <v-icon color="primary" size="18">mdi-chart-donut</v-icon>
-              <span class="section-title">Prediction Breakdown</span>
+              <span class="section-title">Sifter Combination</span>
             </div>
 
-            <div class="breakdown-item mb-4">
-              <div class="d-flex justify-space-between mb-1">
-                <span class="breakdown-label">NORMAL</span>
-                <span class="breakdown-value breakdown-value--normal">92%</span>
+            <template v-if="!isNormal && result">
+              <div class="breakdown-item mb-4">
+                <div class="d-flex justify-space-between mb-1">
+                  <span class="breakdown-label">CURRENT COMBINATION</span>
+                  <span class="breakdown-value breakdown-value--normal">{{ result.currentCombination }}</span>
+                </div>
+                <v-progress-linear
+                  :model-value="currentCombinationProgress"
+                  color="primary"
+                  rounded
+                  height="6"
+                  bg-color="#e2e8f0"
+                />
               </div>
-              <v-progress-linear model-value="92" color="primary" rounded height="6" bg-color="#e2e8f0" />
-            </div>
 
-            <div class="breakdown-item mb-4">
-              <div class="d-flex justify-space-between mb-1">
-                <span class="breakdown-label">WARNING</span>
-                <span class="breakdown-value breakdown-value--warning">6%</span>
+              <div class="breakdown-item mb-4">
+                <div class="d-flex justify-space-between mb-1">
+                  <span class="breakdown-label">REDUCTION LEVEL</span>
+                  <span class="breakdown-value breakdown-value--warning">{{ result.reductionLevel }} คู่</span>
+                </div>
+                <v-progress-linear
+                  :model-value="(result.reductionLevel ?? 0) * 33.3"
+                  color="warning"
+                  rounded
+                  height="6"
+                  bg-color="#e2e8f0"
+                />
               </div>
-              <v-progress-linear model-value="6" color="warning" rounded height="6" bg-color="#e2e8f0" />
-            </div>
 
-            <div class="breakdown-item">
-              <div class="d-flex justify-space-between mb-1">
-                <span class="breakdown-label">CRITICAL</span>
-                <span class="breakdown-value breakdown-value--critical">2%</span>
+              <div class="breakdown-item">
+                <div class="d-flex justify-space-between mb-1">
+                  <span class="breakdown-label">RECOMMENDED</span>
+                  <span class="breakdown-value breakdown-value--critical">{{ result.recommendedControlSifter }}</span>
+                </div>
+                <v-progress-linear
+                  :model-value="recommendedCombinationProgress"
+                  color="error"
+                  rounded
+                  height="6"
+                  bg-color="#e2e8f0"
+                />
               </div>
-              <v-progress-linear model-value="2" color="error" rounded height="6" bg-color="#e2e8f0" />
-            </div>
+            </template>
+
+            <template v-else>
+              <div class="d-flex flex-column align-center justify-center" style="min-height: 120px;">
+                <v-icon color="success" size="48" class="mb-3">mdi-check-circle-outline</v-icon>
+                <p class="result-desc">ค่าปกติ ไม่ต้องปรับ Control Sifter</p>
+              </div>
+            </template>
           </v-card-text>
         </v-card>
       </v-col>
@@ -111,7 +139,16 @@
             </div>
 
             <p class="rec-text mb-4">
-              Continue normal operation. Monitor vibration levels during the next operating cycle.
+              <template v-if="isNormal">
+                Bulk Density อยู่ในเกณฑ์ปกติ สามารถดำเนินการผลิตต่อได้ตามปกติ
+              </template>
+              <template v-else>
+                ค่า Bulk Density ผิดปกติ แนะนำให้ปรับ Control Sifter จาก
+                <strong>{{ result?.currentCombination }}</strong>
+                เป็น
+                <strong>{{ result?.recommendedControlSifter }}</strong>
+                (ลด {{ result?.reductionLevel }} คู่)
+              </template>
             </p>
 
             <v-btn
@@ -128,142 +165,96 @@
       </v-col>
     </v-row>
 
-    <!-- Sensor Diagnostics -->
+    <!-- Input Parameters Summary -->
     <div class="mb-2">
-      <h2 class="section-heading mb-4">Sensor Diagnostics</h2>
+      <h2 class="section-heading mb-4">Input Parameters</h2>
     </div>
     <v-row class="mb-6">
       <v-col
-        v-for="sensor in sensors"
-        :key="sensor.id"
+        v-for="param in inputParams"
+        :key="param.id"
         cols="12" sm="6" lg="3"
       >
-        <v-card rounded="lg" elevation="0" :class="['sensor-card', sensor.status === 'warning' && 'sensor-card--warning']">
+        <v-card rounded="lg" elevation="0" class="sensor-card">
           <v-card-text class="pa-5">
             <div class="d-flex justify-space-between align-center mb-3">
               <div class="d-flex align-center ga-2">
-                <v-icon size="16" :color="sensor.status === 'warning' ? 'warning' : 'grey-lighten-1'">
-                  {{ sensor.icon }}
+                <v-icon size="16" color="grey-lighten-1">
+                  {{ param.icon }}
                 </v-icon>
-                <span class="sensor-label">{{ sensor.label }}</span>
+                <span class="sensor-label">{{ param.label }}</span>
               </div>
-              <div :class="['sensor-dot', `sensor-dot--${sensor.status}`]"></div>
+              <div class="sensor-dot sensor-dot--normal"></div>
             </div>
-            <div class="sensor-value">{{ sensor.value }} <span class="sensor-unit">{{ sensor.unit }}</span></div>
-            <div :class="['sensor-status-text', `sensor-status-text--${sensor.status}`]">{{ sensor.statusText }}</div>
+            <div class="sensor-value">{{ param.value }} <span class="sensor-unit">{{ param.unit }}</span></div>
+            <div class="sensor-status-text sensor-status-text--normal">{{ param.statusText }}</div>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
-    
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Filler,
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
+import { useRouter } from 'vue-router'
+import type { SifterAnalysisResult } from '@/types/machine'
+import { SIFTER_COMBINATIONS } from '@/utils/sifter'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler)
+const router = useRouter()
 
 // Load result from session storage
-const result = ref<any>(null)
+const result = ref<SifterAnalysisResult | null>(null)
 onMounted(() => {
   const stored = sessionStorage.getItem('analysisResult')
   if (stored) result.value = JSON.parse(stored)
 })
 
 const analyzedDate = computed(() => {
-  if (!result.value?.analyzedAt) return '22 AUG 2026'
+  if (!result.value?.analyzedAt) return '—'
   const d = new Date(result.value.analyzedAt)
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 })
 
-const healthScore = 92
+const isNormal = computed(() => result.value?.bulkDensityStatus === 'normal')
 
-const healthStatus = computed(() => {
-  if (healthScore >= 80) return { label: 'NORMAL', type: 'normal' }
-  if (healthScore >= 60) return { label: 'WARNING', type: 'warning' }
-  return { label: 'CRITICAL', type: 'critical' }
+const bulkDensityDisplay = computed(() => {
+  if (!result.value) return '—'
+  return result.value.bulkDensity.toFixed(2)
 })
 
-const sensors = [
-  { id: 'temp', label: 'TEMPERATURE', icon: 'mdi-thermometer', value: '72.5', unit: '°C', status: 'normal', statusText: 'NORMAL' },
-  { id: 'vib', label: 'VIBRATION', icon: 'mdi-sine-wave', value: '3.42', unit: 'mm/s', status: 'warning', statusText: 'WARNING' },
-  { id: 'pres', label: 'PRESSURE', icon: 'mdi-gauge', value: '5.8', unit: 'bar', status: 'normal', statusText: 'NORMAL' },
-  { id: 'load', label: 'LOAD', icon: 'mdi-battery-charging-medium', value: '82', unit: '%', status: 'normal', statusText: 'NORMAL' },
-]
+/** แสดงเป็น % สำหรับ gauge: map ช่วง 39–52 → 0–100 */
+const bulkDensityPercent = computed(() => {
+  if (!result.value) return 0
+  const bd = result.value.bulkDensity
+  return Math.min(100, Math.max(0, ((bd - 39) / (52 - 39)) * 100))
+})
 
-const trendTabs = ['TEMP', 'VIB', 'PRES', 'LOAD']
-const activeTrend = ref('TEMP')
+/** Progress bar แสดงตำแหน่งของ combination ใน array (1-indexed / 9) */
+const currentCombinationProgress = computed(() => {
+  if (!result.value?.currentCombination) return 0
+  const idx = SIFTER_COMBINATIONS.indexOf(result.value.currentCombination as typeof SIFTER_COMBINATIONS[number])
+  return ((idx + 1) / SIFTER_COMBINATIONS.length) * 100
+})
 
-const trendDatasets: Record<string, number[]> = {
-  TEMP: [68, 70, 69, 72, 75, 73, 72, 74, 75],
-  VIB: [1.2, 1.5, 2.0, 2.8, 3.1, 3.42, 3.2, 3.0, 2.8],
-  PRES: [5.5, 5.6, 5.7, 5.8, 5.9, 5.8, 5.7, 5.8, 5.8],
-  LOAD: [75, 78, 80, 82, 84, 82, 80, 82, 82],
-}
+const recommendedCombinationProgress = computed(() => {
+  if (!result.value?.recommendedControlSifter) return 0
+  const idx = SIFTER_COMBINATIONS.indexOf(result.value.recommendedControlSifter as typeof SIFTER_COMBINATIONS[number])
+  return ((idx + 1) / SIFTER_COMBINATIONS.length) * 100
+})
 
-const trendLabels = ['08:00', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30']
-
-const trendChartData = computed(() => ({
-  labels: trendLabels,
-  datasets: [
-    {
-      data: trendDatasets[activeTrend.value],
-      borderColor: '#8866FF',
-      backgroundColor: 'rgba(136, 102, 255, 0.06)',
-      borderWidth: 2.5,
-      pointBackgroundColor: '#ffffff',
-      pointBorderColor: '#8866FF',
-      pointBorderWidth: 2,
-      pointRadius: 4,
-      fill: true,
-      tension: 0.3,
-    },
-  ],
-}))
-
-const trendChartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: '#1E293B',
-      bodyColor: '#ffffff',
-      padding: 10,
-      cornerRadius: 8,
-    },
-  },
-  scales: {
-    y: {
-      grid: { color: 'rgba(0,0,0,0.04)' },
-      ticks: { color: '#94a3b8', font: { size: 10 } },
-      border: { display: false },
-    },
-    x: {
-      grid: { display: false },
-      ticks: { color: '#94a3b8', font: { size: 10 } },
-      border: { display: false },
-    },
-  },
-}
-
-const executionSummary = [
-  { title: 'TEMPERATURE PROFILE', description: 'Operating within expected thermal parameters.', status: 'normal' },
-  { title: 'VIBRATION SPIKE DETECTED', description: 'Minor anomaly observed at 10:14 AM on Z-axis.', status: 'warning' },
-  { title: 'LOAD STABILITY', description: 'Power draw consistent with scheduled task.', status: 'normal' },
-]
+/** แสดง Input Parameters ที่ผู้ใช้กรอก */
+const inputParams = computed(() => {
+  if (!result.value?.formData) return []
+  const fd = result.value.formData
+  return [
+    { id: 'weight', label: 'WEIGHT', icon: 'mdi-weight', value: fd.weight, unit: 'g', statusText: 'น้ำหนัก' },
+    { id: 'volume', label: 'VOLUME', icon: 'mdi-cup-water', value: fd.volume, unit: 'ml', statusText: 'ปริมาตร' },
+    { id: 'circulate', label: 'CIRCULATE', icon: 'mdi-rotate-3d-variant', value: fd.circulate, unit: '%', statusText: 'Circulate' },
+    { id: 'pressure', label: 'PRESSURE CONTROL', icon: 'mdi-gauge', value: fd.pressure, unit: '%', statusText: 'Pressure' },
+  ]
+})
 </script>
 
 <style scoped>

@@ -23,6 +23,18 @@ export interface AnalysisFormData {
   damper2: number | string | null;
 }
 
+export interface SifterAnalysisResult {
+  machine: Machine;
+  formData: AnalysisFormData;
+  analyzedAt: string;
+  // Sifter computed results
+  bulkDensity: number;
+  bulkDensityStatus: 'normal' | 'abnormal';
+  currentCombination: string | null;
+  reductionLevel: number | null;
+  recommendedControlSifter: string | null;
+}
+
 export interface NewMachinePayload {
   name: string;
   icon: string;
