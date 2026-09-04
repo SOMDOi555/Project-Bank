@@ -3,15 +3,15 @@
     <!-- Page Header with Breadcrumb info -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="page-title">Analysis Result</h1>
+        <h1 class="page-title">Sifter Control Result</h1>
         <div class="d-flex align-center ga-3 mt-2 flex-wrap">
           <v-chip size="small" color="primary" variant="flat" class="font-mono">
             ID: {{ result?.machine?.id ? `MC-00${result.machine.id}` : 'MC-001' }}
           </v-chip>
-          <div class="d-flex align-center ga-1 text-grey">
+          <!-- <div class="d-flex align-center ga-1 text-grey">
             <v-icon size="14">mdi-robot-industrial</v-icon>
             <span class="meta-text">{{ result?.machine?.name || 'CNC Machine 01' }}</span>
-          </div>
+          </div> -->
           <div class="d-flex align-center ga-1 text-grey">
             <v-icon size="14">mdi-calendar</v-icon>
             <span class="meta-text">{{ analyzedDate }}</span>
@@ -37,7 +37,7 @@
           <v-card-text class="pa-6 text-center">
             <div class="d-flex align-center ga-2 mb-4">
               <v-icon color="primary" size="18">mdi-google-analytics</v-icon>
-              <span class="section-title">Overall Health</span>
+              <span class="section-title">ผลการวิเคราะห์</span>
             </div>
 
             <div class="gauge-container mb-4">
@@ -156,74 +156,7 @@
       </v-col>
     </v-row>
 
-    <!-- Sensor Trend + Execution Summary -->
-    <v-row>
-      <!-- Sensor Trend Chart -->
-      <v-col cols="12" lg="7">
-        <v-card rounded="lg" elevation="0" class="result-card">
-          <v-card-text class="pa-5">
-            <div class="d-flex justify-space-between align-center mb-4">
-              <h2 class="section-heading">Sensor Trend</h2>
-              <div class="d-flex ga-1">
-                <v-btn
-                  v-for="tab in trendTabs"
-                  :key="tab"
-                  :variant="activeTrend === tab ? 'flat' : 'text'"
-                  :color="activeTrend === tab ? 'primary' : 'grey'"
-                  size="x-small"
-                  rounded="lg"
-                  @click="activeTrend = tab"
-                >{{ tab }}</v-btn>
-              </div>
-            </div>
-            <div class="chart-wrapper">
-              <Line :data="trendChartData" :options="trendChartOptions" />
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <!-- Execution Summary -->
-      <v-col cols="12" lg="5">
-        <v-card rounded="lg" elevation="0" class="result-card h-100">
-          <v-card-text class="pa-5">
-            <h2 class="section-heading mb-4">Execution Summary</h2>
-
-            <div
-              v-for="item in executionSummary"
-              :key="item.title"
-              :class="['summary-item', item.status === 'warning' && 'summary-item--warning']"
-            >
-              <div class="d-flex align-start ga-3">
-                <v-icon
-                  :color="item.status === 'normal' ? 'success' : 'warning'"
-                  size="18"
-                  class="mt-1 flex-shrink-0"
-                >
-                  {{ item.status === 'normal' ? 'mdi-check-circle' : 'mdi-alert' }}
-                </v-icon>
-                <div>
-                  <div :class="['summary-title', item.status === 'warning' && 'summary-title--warning']">
-                    {{ item.title }}
-                  </div>
-                  <div class="summary-desc">{{ item.description }}</div>
-                </div>
-              </div>
-            </div>
-
-            <v-btn
-              variant="text"
-              color="primary"
-              size="small"
-              class="mt-3 pl-0"
-              append-icon="mdi-arrow-right"
-            >
-              View Detailed Logs
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    
   </v-container>
 </template>
 

@@ -12,14 +12,14 @@
       <div class="sidebar-brand pa-4 pb-3">
         <div class="d-flex align-center ga-2 mb-1">
           <div class="brand-icon">
-            <v-icon color="white" size="18">mdi-chart-areaspline</v-icon>
+            <img src="/argo-logo.png" alt="Argo Logo" class="brand-logo" />
           </div>
           <div>
-            <div class="brand-title">Industrial</div>
-            <div class="brand-title">Analysis</div>
+            <div class="brand-title">Argo Fiber Control</div>
+            <div class="brand-title">Center</div>
           </div>
         </div>
-        <div class="brand-subtitle">Ops Management</div>
+        <div class="brand-subtitle">ระบบควบคุมและวิเคราะห์กระบวนการผลิต</div>
       </div>
 
       <v-divider class="border-opacity-10 mx-3 mb-2" />
@@ -37,35 +37,21 @@
           active-class="nav-item-active"
         />
       </v-list>
-
-      <!-- User Info Footer -->
-      <template #append>
-        <v-divider class="border-opacity-10 mx-3" />
-        <div class="pa-4 d-flex align-center ga-3">
-          <v-avatar size="36" color="primary">
-            <v-icon color="white" size="20">mdi-account</v-icon>
-          </v-avatar>
-          <div>
-            <div class="user-name">Admin</div>
-            <div class="user-role">Plant Manager</div>
-          </div>
-        </div>
-      </template>
     </v-navigation-drawer>
 
     <!-- Top App Bar -->
     <v-app-bar flat border="b" color="white" height="60">
-      <v-app-bar-nav-icon
-        color="grey-darken-2"
-        @click="drawer = !drawer"
-      />
+      <v-app-bar-nav-icon color="grey-darken-2" @click="drawer = !drawer" />
 
       <!-- Breadcrumb -->
       <div class="topbar-breadcrumb ml-1">
         <span class="breadcrumb-parent" v-if="currentItem?.parent">
-          {{ currentItem.parent }} <v-icon size="14" class="mx-1">mdi-chevron-right</v-icon>
+          {{ currentItem.parent }}
+          <v-icon size="14" class="mx-1">mdi-chevron-right</v-icon>
         </span>
-        <span class="breadcrumb-current">{{ currentItem?.title || 'Industrial Analysis' }}</span>
+        <span class="breadcrumb-current">{{
+          currentItem?.title || "Industrial Analysis"
+        }}</span>
       </div>
 
       <v-spacer />
@@ -80,29 +66,44 @@
     </v-app-bar>
 
     <!-- Main Content Area -->
-    <v-main style="background-color: #F1F4F9;">
+    <v-main style="background-color: #ffffff">
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 
-const drawer = ref(true)
-const route = useRoute()
+const drawer = ref(true);
+const route = useRoute();
 
 const menuItems = [
-  { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', to: '/dashboard', parent: null },
-  { title: 'Machine Data', icon: 'mdi-robot-industrial-outline', to: '/machine-data', parent: null },
-  { title: 'Analysis', icon: 'mdi-chart-bar', to: '/analysis-result', parent: null },
-  { title: 'History', icon: 'mdi-history', to: '/history', parent: null },
-]
+  {
+    title: "Dashboard",
+    icon: "mdi-view-dashboard-outline",
+    to: "/dashboard",
+    parent: null,
+  },
+  {
+    title: "Control Sifter",
+    icon: "mdi-excavator",
+    to: "/machine-data",
+    parent: null,
+  },
+  // {
+  //   title: "Analysis",
+  //   icon: "mdi-chart-bar",
+  //   to: "/analysis-result",
+  //   parent: null,
+  // },
+  // { title: "History", icon: "mdi-history", to: "/history", parent: null },
+];
 
-const currentItem = computed(() =>
-  menuItems.find((item) => route.path.startsWith(item.to)) || null
-)
+const currentItem = computed(
+  () => menuItems.find((item) => route.path.startsWith(item.to)) || null,
+);
 </script>
 
 <style scoped>
@@ -113,12 +114,16 @@ const currentItem = computed(() =>
 .brand-icon {
   width: 32px;
   height: 32px;
-  background: #8866FF;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-title {
@@ -130,7 +135,7 @@ const currentItem = computed(() =>
 
 .brand-subtitle {
   font-size: 11px;
-  color: #64748b;
+  color: #ffffff;
   margin-top: 2px;
   margin-left: 40px;
 }
@@ -148,7 +153,7 @@ const currentItem = computed(() =>
 }
 
 .nav-item-active {
-  background: #8866FF !important;
+  background: #c1c1c1 !important;
   color: #ffffff !important;
   font-weight: 600;
 }

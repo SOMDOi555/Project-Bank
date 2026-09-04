@@ -14,7 +14,7 @@ const router = createRouter({
     },
     {
       path: '/machine-data',
-      name: 'MachineData',
+      name: 'Control Sifter',
       component: () => import('@/pages/machine-data.vue'),
     },
     {

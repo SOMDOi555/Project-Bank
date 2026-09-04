@@ -19,8 +19,8 @@ export interface AnalysisFormData {
   // 3. Sifter condition
   circulate: string;
   pressure: string;
-  damper1: string;
-  damper2: string;
+  damper1: number | string | null;
+  damper2: number | string | null;
 }
 
 export interface NewMachinePayload {
