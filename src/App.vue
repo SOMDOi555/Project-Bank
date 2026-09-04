@@ -1,0 +1,186 @@
+<template>
+  <v-app>
+    <!-- Sidebar Navigation Drawer -->
+    <v-navigation-drawer
+      v-model="drawer"
+      permanent
+      :width="220"
+      color="#1E293B"
+      elevation="0"
+    >
+      <!-- Logo & App Title -->
+      <div class="sidebar-brand pa-4 pb-3">
+        <div class="d-flex align-center ga-2 mb-1">
+          <div class="brand-icon">
+            <v-icon color="white" size="18">mdi-chart-areaspline</v-icon>
+          </div>
+          <div>
+            <div class="brand-title">Industrial</div>
+            <div class="brand-title">Analysis</div>
+          </div>
+        </div>
+        <div class="brand-subtitle">Ops Management</div>
+      </div>
+
+      <v-divider class="border-opacity-10 mx-3 mb-2" />
+
+      <!-- Navigation Menu -->
+      <v-list density="comfortable" nav class="pa-3">
+        <v-list-item
+          v-for="item in menuItems"
+          :key="item.title"
+          :to="item.to"
+          :prepend-icon="item.icon"
+          :title="item.title"
+          rounded="lg"
+          class="mb-1 nav-item"
+          active-class="nav-item-active"
+        />
+      </v-list>
+
+      <!-- User Info Footer -->
+      <template #append>
+        <v-divider class="border-opacity-10 mx-3" />
+        <div class="pa-4 d-flex align-center ga-3">
+          <v-avatar size="36" color="primary">
+            <v-icon color="white" size="20">mdi-account</v-icon>
+          </v-avatar>
+          <div>
+            <div class="user-name">Admin</div>
+            <div class="user-role">Plant Manager</div>
+          </div>
+        </div>
+      </template>
+    </v-navigation-drawer>
+
+    <!-- Top App Bar -->
+    <v-app-bar flat border="b" color="white" height="60">
+      <v-app-bar-nav-icon
+        color="grey-darken-2"
+        @click="drawer = !drawer"
+      />
+
+      <!-- Breadcrumb -->
+      <div class="topbar-breadcrumb ml-1">
+        <span class="breadcrumb-parent" v-if="currentItem?.parent">
+          {{ currentItem.parent }} <v-icon size="14" class="mx-1">mdi-chevron-right</v-icon>
+        </span>
+        <span class="breadcrumb-current">{{ currentItem?.title || 'Industrial Analysis' }}</span>
+      </div>
+
+      <v-spacer />
+
+      <!-- Top Bar Actions -->
+      <v-btn icon variant="text" color="grey-darken-1" class="mr-1">
+        <v-icon>mdi-bell-outline</v-icon>
+      </v-btn>
+      <v-btn icon variant="text" color="grey-darken-1" class="mr-2">
+        <v-icon>mdi-cog-outline</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <!-- Main Content Area -->
+    <v-main style="background-color: #F1F4F9;">
+      <router-view />
+    </v-main>
+  </v-app>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const drawer = ref(true)
+const route = useRoute()
+
+const menuItems = [
+  { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', to: '/dashboard', parent: null },
+  { title: 'Machine Data', icon: 'mdi-robot-industrial-outline', to: '/machine-data', parent: null },
+  { title: 'Analysis', icon: 'mdi-chart-bar', to: '/analysis-result', parent: null },
+  { title: 'History', icon: 'mdi-history', to: '/history', parent: null },
+]
+
+const currentItem = computed(() =>
+  menuItems.find((item) => route.path.startsWith(item.to)) || null
+)
+</script>
+
+<style scoped>
+.sidebar-brand {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: #8866FF;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+  margin-left: 40px;
+}
+
+.nav-item {
+  color: #94a3b8 !important;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #e2e8f0 !important;
+}
+
+.nav-item-active {
+  background: #8866FF !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.nav-item-active :deep(.v-icon) {
+  color: #ffffff !important;
+}
+
+.user-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+  line-height: 1.3;
+}
+
+.user-role {
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.topbar-breadcrumb {
+  font-size: 14px;
+}
+
+.breadcrumb-parent {
+  color: #94a3b8;
+}
+
+.breadcrumb-current {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 15px;
+}
+</style>
