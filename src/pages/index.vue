@@ -116,12 +116,10 @@
             elevation="0"
             border
           >
-            <!-- กล่องแสดงรูปทรงกลม (เว้นว่างรอรูป) -->
+            <!-- กล่องแสดงรูปทรงกลม -->
             <div class="card-media-wrapper mb-5">
               <div class="card-circle bg-pink-lighten-5">
-                <v-icon size="48" color="pink-lighten-2"
-                  >mdi-water-percent</v-icon
-                >
+                <img src="/MC.png" alt="Predict %MC Forming" class="card-img" />
               </div>
             </div>
 
@@ -162,12 +160,10 @@
             elevation="0"
             border
           >
-            <!-- กล่องแสดงรูปทรงกลม (เว้นว่างรอรูป) -->
+            <!-- กล่องแสดงรูปทรงกลม -->
             <div class="card-media-wrapper mb-5">
               <div class="card-circle bg-amber-lighten-5">
-                <v-icon size="48" color="amber-lighten-2"
-                  >mdi-printer-3d-nozzle</v-icon
-                >
+                <img src="/kuster.png" alt="Kuster Press" class="card-img" />
               </div>
             </div>
 
