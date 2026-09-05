@@ -114,13 +114,13 @@ export function getReductionLevel(bulkDensity: number): number {
 /**
  * หา Recommended Control Sifter
  *
- * Logic: recommendedIndex = currentIndex + reduction + 1
- * (ไม่นับ Current Combination เป็นคู่ที่ลด → ข้ามไปตามจำนวน reduction คู่ → เลือกตัวถัดไป)
+ * Logic: recommendedIndex = currentIndex + reduction
+ * (นับเลื่อนลำดับตามจำนวน reduction คู่)
  *
  * ตัวอย่างกรณีเริ่มที่ 3A (index 0):
- * - ลด 1 คู่ (reduction = 1): ข้าม 3B (1 คู่) → ได้ 2A (index 2)
- * - ลด 2 คู่ (reduction = 2): ข้าม 3B, 2A (2 คู่) → ได้ 2B (index 3)
- * - ลด 3 คู่ (reduction = 3): ข้าม 3B, 2A, 2B (3 คู่) → ได้ 3C (index 4)
+ * - ลด 1 คู่ (reduction = 1): ได้ 3B (index 1)
+ * - ลด 2 คู่ (reduction = 2): ได้ 2A (index 2)
+ * - ลด 3 คู่ (reduction = 3): ได้ 2B (index 3)
  *
  * ถ้า index เกินขอบเขต → คืนค่าตัวสุดท้ายใน array ('1C')
  */
@@ -131,7 +131,7 @@ export function getRecommendedControlSifter(
   const currentIndex = SIFTER_COMBINATIONS.indexOf(currentCombination)
   if (currentIndex === -1) return currentCombination
 
-  const recommendedIndex = currentIndex + reduction + 1
+  const recommendedIndex = currentIndex + reduction
 
   // Clamp ให้ไม่เกินขอบเขต
   const clampedIndex = Math.min(recommendedIndex, SIFTER_COMBINATIONS.length - 1)

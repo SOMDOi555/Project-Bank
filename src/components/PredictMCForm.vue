@@ -2,10 +2,10 @@
   <div class="predict-mc-form-view">
     <!-- Header -->
     <div class="text-headline-medium font-weight-bold mb-3">
-      2. Predict %MC Forming
+      Predict %MC Forming
     </div>
-    <div class="text-title-medium font-weight-bold mb-4 text-grey-darken-1">
-      กรอกข้อมูลสำหรับทำนายความชื้น (%MC) ของ Fiber ที่ตำแหน่ง Forming
+    <div class="text-title-medium font-weight-bold mb-2">
+      กรอกข้อมูลสำหรับทำนายความชื้น (%MC)
     </div>
 
     <!-- หมวดที่ 1: ข้อมูลทั่วไป (ไม่มี Badge ตามคำขอ) -->
@@ -96,7 +96,6 @@
             density="comfortable"
             rounded="lg"
             readonly
-            messages="fix"
           />
         </v-col>
       </v-row>
@@ -289,13 +288,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useSwal } from "@/plugins/sweetalert";
+import { calculateMCFromFormData, formatMC } from "@/utils/predictMC";
 import type { PredictMCFormData } from "@/types/predictMC";
 
 const emit = defineEmits<{
   (e: "back"): void;
-  (e: "submit", data: PredictMCFormData): void;
+  (e: "submit", data: PredictMCFormData, predictedMC?: number | null): void;
 }>();
 
 const swal = useSwal();
@@ -339,6 +339,23 @@ const initialFormData: PredictMCFormData = {
 
 const formData = ref<PredictMCFormData>({ ...initialFormData });
 
+// ─── MC Calculation Logic (Using Centralized Utils) ──────────────────────────
+
+// Computed property คำนวณ %MC อัตโนมัติทุกครั้งที่ Input เปลี่ยนแปลง
+const predictedMC = computed<number | null>(() => {
+  return calculateMCFromFormData(formData.value);
+});
+
+// รูปแบบแสดงผลทศนิยม 2 ตำแหน่ง
+const formattedMC2 = computed<string>(() => {
+  return formatMC(predictedMC.value, 2);
+});
+
+// รูปแบบแสดงผลทศนิยม 3 ตำแหน่ง
+const formattedMC3 = computed<string>(() => {
+  return formatMC(predictedMC.value, 3);
+});
+
 // ล้างค่าฟอร์ม
 const resetForm = () => {
   formData.value = {
@@ -363,12 +380,7 @@ const handleSubmit = () => {
     swal.warning("กรุณากรอกข้อมูล", "กรุณาเลือก Thickness ก่อนทำการวิเคราะห์");
     return;
   }
-  emit("submit", { ...formData.value });
+  emit("submit", { ...formData.value }, predictedMC.value);
 };
 </script>
 
-<style scoped>
-.predict-mc-form-view {
-  width: 100%;
-}
-</style>
