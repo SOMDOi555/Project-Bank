@@ -42,20 +42,30 @@
                 :model-value="bulkDensityPercent"
                 :size="130"
                 :width="12"
-                :color="isNormal ? 'success' : 'warning'"
+                :color="isNormal ? 'success' : 'error'"
                 bg-color="#e2e8f0"
               >
                 <div>
                   <div class="gauge-value">{{ bulkDensityDisplay }}</div>
-                  <div :class="['gauge-status', isNormal ? 'gauge-status--normal' : 'gauge-status--warning']">
-                    {{ isNormal ? 'ปกติ' : 'ผิดปกติ' }}
+                  <div :class="['gauge-status', isNormal ? 'gauge-status--normal' : 'gauge-status--critical']">
+                    <v-icon
+                      :icon="isNormal ? 'mdi-check-bold' : 'mdi-close-thick'"
+                      size="12"
+                      class="me-1"
+                    />
+                    <span>{{ isNormal ? 'ปกติ' : 'ผิดปกติ' }}</span>
                   </div>
                 </div>
               </v-progress-circular>
             </div>
 
-            <p class="result-desc">
-              {{ isNormal ? 'ค่า Bulk Density อยู่ในเกณฑ์ปกติ' : 'ค่า Bulk Density อยู่ในเกณฑ์ผิดปกติ' }}
+            <p class="result-desc d-flex align-center justify-center ga-1">
+              <v-icon
+                :icon="isNormal ? 'mdi-check-circle' : 'mdi-close-circle'"
+                :color="isNormal ? 'success' : 'error'"
+                size="16"
+              />
+              <span>{{ isNormal ? 'ค่า Bulk Density อยู่ในเกณฑ์ปกติ' : 'ค่า Bulk Density อยู่ในเกณฑ์ผิดปกติ' }}</span>
             </p>
             <p class="result-desc-sub">
               ช่วงปกติ: 39.00 – 43.00
@@ -64,65 +74,115 @@
         </v-card>
       </v-col>
 
-      <!-- Current Sifter Combination -->
+      <!-- Analysis Input Data (Form Data Summary) -->
       <v-col cols="12" md="4">
         <v-card rounded="lg" elevation="0" class="result-card h-100">
           <v-card-text class="pa-6">
-            <div class="d-flex align-center ga-2 mb-5">
-              <v-icon color="primary" size="18">mdi-chart-donut</v-icon>
-              <span class="section-title">Sifter Combination</span>
+            <div class="d-flex align-center justify-space-between mb-4">
+              <div class="d-flex align-center ga-2">
+                <v-icon color="primary" size="20">mdi-clipboard-text-outline</v-icon>
+                <span class="section-title">ข้อมูลที่ใช้ในการวิเคราะห์</span>
+              </div>
+              <v-chip size="small" variant="tonal" color="primary" class="font-weight-medium">
+                Input Data
+              </v-chip>
             </div>
 
-            <template v-if="!isNormal && result">
-              <div class="breakdown-item mb-4">
-                <div class="d-flex justify-space-between mb-1">
-                  <span class="breakdown-label">CURRENT COMBINATION</span>
-                  <span class="breakdown-value breakdown-value--normal">{{ result.currentCombination }}</span>
+            <div class="input-data-container">
+              <!-- 1. Product -->
+              <div class="input-group-section">
+                <div class="input-group-header">
+                  <v-icon size="16" color="primary" class="me-1">mdi-package-variant-closed</v-icon>
+                  <span>1. Product</span>
                 </div>
-                <v-progress-linear
-                  :model-value="currentCombinationProgress"
-                  color="primary"
-                  rounded
-                  height="6"
-                  bg-color="#e2e8f0"
-                />
+                <div class="input-grid">
+                  <div class="input-item">
+                    <span class="input-item-label">Lot</span>
+                    <span class="input-item-val">{{ result?.formData?.lot || '—' }}</span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">Thickness</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.thickness ?? '—' }}
+                      <span v-if="result?.formData?.thickness" class="input-item-unit">mm</span>
+                    </span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">Product</span>
+                    <span class="input-item-val">{{ result?.formData?.product || '—' }}</span>
+                  </div>
+                </div>
               </div>
 
-              <div class="breakdown-item mb-4">
-                <div class="d-flex justify-space-between mb-1">
-                  <span class="breakdown-label">REDUCTION LEVEL</span>
-                  <span class="breakdown-value breakdown-value--warning">{{ result.reductionLevel }} คู่</span>
+              <!-- 2. Fiber Condition -->
+              <div class="input-group-section">
+                <div class="input-group-header">
+                  <v-icon size="16" color="primary" class="me-1">mdi-water-percent</v-icon>
+                  <span>2. Fiber Condition</span>
                 </div>
-                <v-progress-linear
-                  :model-value="(result.reductionLevel ?? 0) * 33.3"
-                  color="warning"
-                  rounded
-                  height="6"
-                  bg-color="#e2e8f0"
-                />
+                <div class="input-grid">
+                  <div class="input-item">
+                    <span class="input-item-label">Weight</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.weight || '—' }}
+                      <span v-if="result?.formData?.weight" class="input-item-unit">g</span>
+                    </span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">Volume</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.volume || '—' }}
+                      <span v-if="result?.formData?.volume" class="input-item-unit">ml</span>
+                    </span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">ความชื้น (%MC)</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.moisture || '—' }}
+                      <span v-if="result?.formData?.moisture" class="input-item-unit">%</span>
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div class="breakdown-item">
-                <div class="d-flex justify-space-between mb-1">
-                  <span class="breakdown-label">RECOMMENDED</span>
-                  <span class="breakdown-value breakdown-value--critical">{{ result.recommendedControlSifter }}</span>
+              <!-- 3. Sifter Condition -->
+              <div class="input-group-section">
+                <div class="input-group-header">
+                  <v-icon size="16" color="primary" class="me-1">mdi-tune-vertical</v-icon>
+                  <span>3. Sifter Condition</span>
                 </div>
-                <v-progress-linear
-                  :model-value="recommendedCombinationProgress"
-                  color="error"
-                  rounded
-                  height="6"
-                  bg-color="#e2e8f0"
-                />
+                <div class="input-grid input-grid--4">
+                  <div class="input-item">
+                    <span class="input-item-label">Circulate</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.circulate || '—' }}
+                      <span v-if="result?.formData?.circulate" class="input-item-unit">%</span>
+                    </span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">Pressure</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.pressure || '—' }}
+                      <span v-if="result?.formData?.pressure" class="input-item-unit">%</span>
+                    </span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">Damper 1</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.damper1 ?? '—' }}
+                      <span v-if="result?.formData?.damper1" class="input-item-unit">mm</span>
+                    </span>
+                  </div>
+                  <div class="input-item">
+                    <span class="input-item-label">Damper 2</span>
+                    <span class="input-item-val">
+                      {{ result?.formData?.damper2 ?? '—' }}
+                      <span v-if="result?.formData?.damper2" class="input-item-unit">mm</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-            </template>
-
-            <template v-else>
-              <div class="d-flex flex-column align-center justify-center" style="min-height: 120px;">
-                <v-icon color="success" size="48" class="mb-3">mdi-check-circle-outline</v-icon>
-                <p class="result-desc">ค่าปกติ ไม่ต้องปรับ Control Sifter</p>
-              </div>
-            </template>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -140,9 +200,11 @@
 
             <p class="rec-text mb-4">
               <template v-if="isNormal">
+                <v-icon color="success" size="18" class="me-1">mdi-check-circle</v-icon>
                 Bulk Density อยู่ในเกณฑ์ปกติ สามารถดำเนินการผลิตต่อได้ตามปกติ
               </template>
               <template v-else>
+                <v-icon color="error" size="18" class="me-1">mdi-close-circle</v-icon>
                 ค่า Bulk Density ผิดปกติ แนะนำให้ปรับ Control Sifter จาก
                 <strong>{{ result?.currentCombination }}</strong>
                 เป็น
@@ -166,7 +228,7 @@
     </v-row>
 
     <!-- Input Parameters Summary -->
-    <div class="mb-2">
+    <!-- <div class="mb-2">
       <h2 class="section-heading mb-4">Input Parameters</h2>
     </div>
     <v-row class="mb-6">
@@ -191,7 +253,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
+    </v-row> -->
 
   </v-container>
 </template>
@@ -200,7 +262,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import type { SifterAnalysisResult } from '@/types/machine'
-import { SIFTER_COMBINATIONS } from '@/utils/sifter'
 
 const router = useRouter()
 
@@ -231,18 +292,6 @@ const bulkDensityPercent = computed(() => {
   return Math.min(100, Math.max(0, ((bd - 39) / (52 - 39)) * 100))
 })
 
-/** Progress bar แสดงตำแหน่งของ combination ใน array (1-indexed / 9) */
-const currentCombinationProgress = computed(() => {
-  if (!result.value?.currentCombination) return 0
-  const idx = SIFTER_COMBINATIONS.indexOf(result.value.currentCombination as typeof SIFTER_COMBINATIONS[number])
-  return ((idx + 1) / SIFTER_COMBINATIONS.length) * 100
-})
-
-const recommendedCombinationProgress = computed(() => {
-  if (!result.value?.recommendedControlSifter) return 0
-  const idx = SIFTER_COMBINATIONS.indexOf(result.value.recommendedControlSifter as typeof SIFTER_COMBINATIONS[number])
-  return ((idx + 1) / SIFTER_COMBINATIONS.length) * 100
-})
 
 /** แสดง Input Parameters ที่ผู้ใช้กรอก */
 const inputParams = computed(() => {
@@ -284,7 +333,7 @@ const inputParams = computed(() => {
 }
 
 .section-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #1e293b;
 }
@@ -311,13 +360,16 @@ const inputParams = computed(() => {
 }
 
 .gauge-status {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-align: center;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
   margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .gauge-status--normal { background: #dcfce7; color: #15803d; }
@@ -335,23 +387,65 @@ const inputParams = computed(() => {
   color: #94a3b8;
 }
 
-/* --- Breakdown --- */
-.breakdown-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  color: #94a3b8;
-  font-family: 'JetBrains Mono', monospace !important;
+/* --- Input Data Summary Card --- */
+.input-data-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.breakdown-value {
-  font-size: 12px;
-  font-weight: 700;
+.input-group-section {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 10px 14px;
+  border: 1px solid #f1f5f9;
 }
 
-.breakdown-value--normal { color: #8866FF; }
-.breakdown-value--warning { color: #f59e0b; }
-.breakdown-value--critical { color: #CC4284; }
+.input-group-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.input-grid--4 {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 16px;
+}
+
+.input-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-item-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.input-item-val {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.input-item-unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: #64748b;
+  margin-left: 2px;
+}
 
 /* --- Recommendation --- */
 .rec-icon {

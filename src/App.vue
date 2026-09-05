@@ -98,6 +98,12 @@ const menuItems = [
     parent: null,
   },
   {
+    title: "Predict %MC Forming",
+    icon: "mdi-water-percent",
+    to: "/predict-mc",
+    parent: null,
+  },
+  {
     title: "Dashboard",
     icon: "mdi-view-dashboard-outline",
     to: "/dashboard",

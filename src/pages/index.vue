@@ -83,7 +83,7 @@
 
             <!-- ป้ายชื่อโมดูล -->
             <div class="d-flex justify-center mb-3">
-              <span class="module-badge">1. Control Sifter</span>
+              <span class="module-title font-weight-bold">1. Control Sifter</span>
             </div>
 
             <!-- คำบรรยาย -->
@@ -127,7 +127,7 @@
 
             <!-- ป้ายชื่อโมดูล -->
             <div class="d-flex justify-center mb-3">
-              <span class="module-badge badge-pink"
+              <span class="module-title font-weight-bold"
                 >2. Predict %MC Forming</span
               >
             </div>
@@ -173,7 +173,7 @@
 
             <!-- ป้ายชื่อโมดูล -->
             <div class="d-flex justify-center mb-3">
-              <span class="module-badge badge-amber">3. Kuster Press</span>
+              <span class="module-title font-weight-bold">3. Kuster Press</span>
             </div>
 
             <!-- คำบรรยาย -->
@@ -219,7 +219,7 @@ const startSifter = () => {
 
 // 2. Predict %MC Forming (จริง)
 const startPredictMC = () => {
-  swal.toast("กำลังเข้าสู่โมดูล Predict %MC Forming", "info");
+  router.push("/predict-mc");
 };
 
 // 3. Kuster Press (หลอก/Mock)
@@ -318,6 +318,10 @@ const handleMockModule = (name: string) => {
   max-width: 80%;
   max-height: 80%;
   object-fit: contain;
+}
+
+.module-title {
+  font-size: 16px;
 }
 
 .module-badge {
