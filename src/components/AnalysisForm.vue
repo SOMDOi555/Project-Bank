@@ -23,7 +23,9 @@
       </v-row>
     </div>
 
-    <!-- กลุ่มที่ 1: Product -->
+    <!-- Form -->
+    <v-form ref="formRef" @submit.prevent="handleSubmit">
+      <!-- กลุ่มที่ 1: Product -->
       <div class="mb-6 border rounded-lg pa-4">
         <v-row>
           <v-col cols="12">
@@ -46,6 +48,7 @@
               hint="(ตัวอย่าง 377)"
               persistent-hint
               clearable
+              :rules="[(v) => (v !== '' && v !== null && v !== undefined) || 'กรุณากรอก Lot']"
             />
           </v-col>
 
@@ -62,6 +65,7 @@
               rounded="lg"
               suffix="mm"
               clearable
+              :rules="[(v) => !!v || 'กรุณาเลือก Thickness']"
             />
           </v-col>
 
@@ -78,206 +82,214 @@
               rounded="lg"
               persistent-hint
               clearable
+              :rules="[(v) => !!v || 'กรุณาเลือก Product']"
             />
           </v-col>
         </v-row>
       </div>
 
-    <!-- กลุ่มที่ 2: Fiber Condition -->
-    <div class="mb-6 border rounded-lg pa-4">
-      <v-row>
-        <v-col cols="12">
-          <div class="text-title-medium font-weight-bold">
-            2. Fiber Condition
-          </div>
-        </v-col>
-      </v-row>
+      <!-- กลุ่มที่ 2: Fiber Condition -->
+      <div class="mb-6 border rounded-lg pa-4">
+        <v-row>
+          <v-col cols="12">
+            <div class="text-title-medium font-weight-bold">
+              2. Fiber Condition
+            </div>
+          </v-col>
+        </v-row>
 
-      <v-row>
-        <!-- 1. Weight -->
-        <v-col cols="12" sm="6" md="4">
-          <v-text-field
-            v-model="formData.weight"
-            type="number"
-            step="0.01"
-            label="Weight(น้ำหนัก)"
-            placeholder="00.00"
-            persistent-placeholder
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            suffix="g"
-            hint="(กรอกค่า 1.95-2.05)"
-            persistent-hint
-            clearable
-            :rules="[
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) >= 1.95) ||
-                'ต้องไม่น้อยกว่า 1.95',
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) <= 2.05) ||
-                'ต้องไม่เกิน 2.05',
-            ]"
-          />
-        </v-col>
+        <v-row>
+          <!-- 1. Weight -->
+          <v-col cols="12" sm="6" md="4">
+            <v-text-field
+              v-model="formData.weight"
+              type="number"
+              step="0.01"
+              label="Weight(น้ำหนัก)"
+              placeholder="00.00"
+              persistent-placeholder
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              suffix="g"
+              hint="(กรอกค่า 1.95-2.05)"
+              persistent-hint
+              clearable
+              :rules="[
+                (v) => (v !== '' && v !== null && v !== undefined) || 'กรุณากรอก Weight',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) >= 1.95) ||
+                  'ต้องไม่น้อยกว่า 1.95',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) <= 2.05) ||
+                  'ต้องไม่เกิน 2.05',
+              ]"
+            />
+          </v-col>
 
-        <!-- 2. Volume -->
-        <v-col cols="12" sm="6" md="4">
-          <v-text-field
-            v-model="formData.volume"
-            label="Volume (ปริมาตร)"
-            suffix="ml"
-            hint="(กรอกค่า 40-50)"
-            persistent-placeholder
-            persistent-hint
-            clearable
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            :rules="[
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) >= 40) ||
-                'ต้องไม่น้อยกว่า 40',
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) <= 50) ||
-                'ต้องไม่เกิน 50',
-            ]"
-          />
-        </v-col>
+          <!-- 2. Volume -->
+          <v-col cols="12" sm="6" md="4">
+            <v-text-field
+              v-model="formData.volume"
+              label="Volume (ปริมาตร)"
+              suffix="ml"
+              hint="(กรอกค่า 40-50)"
+              persistent-placeholder
+              persistent-hint
+              clearable
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              :rules="[
+                (v) => (v !== '' && v !== null && v !== undefined) || 'กรุณากรอก Volume',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) >= 40) ||
+                  'ต้องไม่น้อยกว่า 40',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) <= 50) ||
+                  'ต้องไม่เกิน 50',
+              ]"
+            />
+          </v-col>
 
-        <!-- 3. ความชื้น (%MC) -->
-        <v-col cols="12" sm="6" md="4">
-          <v-text-field
-            v-model="formData.moisture"
-            type="number"
-            step="0.01"
-            label="ความชื้น (%MC)"
-            placeholder="00.00"
-            persistent-placeholder
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            suffix="%"
-            hint="(ตัวอย่าง 10.25)"
-            persistent-hint
-            clearable
-          />
-        </v-col>
-      </v-row>
-    </div>
+          <!-- 3. ความชื้น (%MC) -->
+          <v-col cols="12" sm="6" md="4">
+            <v-text-field
+              v-model="formData.moisture"
+              type="number"
+              step="0.01"
+              label="ความชื้น (%MC)"
+              placeholder="00.00"
+              persistent-placeholder
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              suffix="%"
+              hint="(ตัวอย่าง 10.25)"
+              persistent-hint
+              clearable
+              :rules="[(v) => (v !== '' && v !== null && v !== undefined) || 'กรุณากรอก ความชื้น (%MC)']"
+            />
+          </v-col>
+        </v-row>
+      </div>
 
-    <!-- กลุ่มที่ 3: Sifter condition -->
-    <div class="mb-6 border rounded-lg pa-4">
-      <v-row>
-        <v-col cols="12">
-          <div class="text-title-medium font-weight-bold">
-            3. Sifter condition
-          </div>
-        </v-col>
-      </v-row>
+      <!-- กลุ่มที่ 3: Sifter condition -->
+      <div class="mb-6 border rounded-lg pa-4">
+        <v-row>
+          <v-col cols="12">
+            <div class="text-title-medium font-weight-bold">
+              3. Sifter condition
+            </div>
+          </v-col>
+        </v-row>
 
-      <v-row>
-        <!-- 1. Circulate -->
-        <v-col cols="12" sm="6" md="3">
-          <v-text-field
-            v-model="formData.circulate"
-            label="1. Circulate"
-            placeholder="00"
-            persistent-placeholder
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            suffix="%"
-            hint="(กรอกค่า 55-65)"
-            persistent-hint
-            clearable
-            :rules="[
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) >= 55) ||
-                'ต้องไม่น้อยกว่า 55',
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) <= 65) ||
-                'ต้องไม่เกิน 65',
-            ]"
-          />
-        </v-col>
+        <v-row>
+          <!-- 1. Circulate -->
+          <v-col cols="12" sm="6" md="3">
+            <v-text-field
+              v-model="formData.circulate"
+              label="1. Circulate"
+              placeholder="00"
+              persistent-placeholder
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              suffix="%"
+              hint="(กรอกค่า 55-65)"
+              persistent-hint
+              clearable
+              :rules="[
+                (v) => (v !== '' && v !== null && v !== undefined) || 'กรุณากรอก Circulate',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) >= 55) ||
+                  'ต้องไม่น้อยกว่า 55',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) <= 65) ||
+                  'ต้องไม่เกิน 65',
+              ]"
+            />
+          </v-col>
 
-        <!-- 2. Pressure control -->
-        <v-col cols="12" sm="6" md="3">
-          <v-text-field
-            v-model="formData.pressure"
-            type="number"
-            step="0.1"
-            label="2. Pressure control"
-            placeholder="00.0"
-            persistent-placeholder
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            suffix="%"
-            hint="(กรอกค่า 10-20)"
-            persistent-hint
-            clearable
-            :rules="[
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) >= 10) ||
-                'ต้องไม่น้อยกว่า 10',
-              (v) =>
-                v === '' ||
-                v === null ||
-                (!isNaN(v) && Number(v) <= 20) ||
-                'ต้องไม่เกิน 20',
-            ]"
-          />
-        </v-col>
+          <!-- 2. Pressure control -->
+          <v-col cols="12" sm="6" md="3">
+            <v-text-field
+              v-model="formData.pressure"
+              type="number"
+              step="0.1"
+              label="2. Pressure control"
+              placeholder="00.0"
+              persistent-placeholder
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              suffix="%"
+              hint="(กรอกค่า 10-20)"
+              persistent-hint
+              clearable
+              :rules="[
+                (v) => (v !== '' && v !== null && v !== undefined) || 'กรุณากรอก Pressure control',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) >= 10) ||
+                  'ต้องไม่น้อยกว่า 10',
+                (v) =>
+                  v === '' ||
+                  v === null ||
+                  (!isNaN(v) && Number(v) <= 20) ||
+                  'ต้องไม่เกิน 20',
+              ]"
+            />
+          </v-col>
 
-        <!-- 3. Damper 1 -->
-        <v-col cols="12" sm="6" md="3">
-          <v-select
-            v-model="formData.damper1"
-            :items="damperOptions"
-            label="3. Damper 1"
-            placeholder="00"
-            persistent-placeholder
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            suffix="mm"
-            clearable
-          />
-        </v-col>
+          <!-- 3. Damper 1 -->
+          <v-col cols="12" sm="6" md="3">
+            <v-select
+              v-model="formData.damper1"
+              :items="damperOptions"
+              label="3. Damper 1"
+              placeholder="00"
+              persistent-placeholder
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              suffix="mm"
+              clearable
+              :rules="[(v) => (v !== '' && v !== null && v !== undefined) || 'กรุณาเลือก Damper 1']"
+            />
+          </v-col>
 
-        <!-- 4. Damper 2 -->
-        <v-col cols="12" sm="6" md="3">
-          <v-select
-            v-model="formData.damper2"
-            :items="damperOptions"
-            label="4. Damper 2"
-            placeholder="00"
-            persistent-placeholder
-            variant="outlined"
-            density="comfortable"
-            rounded="lg"
-            suffix="mm"
-            clearable
-          />
-        </v-col>
-      </v-row>
-    </div>
+          <!-- 4. Damper 2 -->
+          <v-col cols="12" sm="6" md="3">
+            <v-select
+              v-model="formData.damper2"
+              :items="damperOptions"
+              label="4. Damper 2"
+              placeholder="00"
+              persistent-placeholder
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              suffix="mm"
+              clearable
+              :rules="[(v) => (v !== '' && v !== null && v !== undefined) || 'กรุณาเลือก Damper 2']"
+            />
+          </v-col>
+        </v-row>
+      </div>
 
     <!-- ปุ่ม Action: Responsive เต็มจอบนมือถือ / กะทัดรัดชิดขวาบนคอม -->
     <v-row class="mt-4">
@@ -317,6 +329,7 @@
         </v-btn>
       </v-col>
     </v-row>
+    </v-form>
   </div>
 </template>
 
@@ -324,6 +337,8 @@
 import { ref } from "vue";
 import { useSwal } from "@/plugins/sweetalert";
 import type { Machine, AnalysisFormData } from "@/types/machine";
+
+const formRef = ref<{ validate: () => Promise<{ valid: boolean }> } | null>(null);
 
 defineProps<{
   machine: Machine;
@@ -365,6 +380,7 @@ const formData = ref<AnalysisFormData>({ ...initialFormData });
 // ล้างค่าฟอร์ม
 const resetForm = () => {
   formData.value = { ...initialFormData };
+  formRef.value?.resetValidation();
   swal.toast("ล้างค่าเรียบร้อย", "success");
 };
 
@@ -429,7 +445,14 @@ const validateForm = (): boolean => {
 };
 
 // ส่งข้อมูลวิเคราะห์
-const handleSubmit = () => {
+const handleSubmit = async () => {
+  if (formRef.value) {
+    const { valid } = await formRef.value.validate();
+    if (!valid) {
+      validateForm();
+      return;
+    }
+  }
   if (!validateForm()) {
     return;
   }
