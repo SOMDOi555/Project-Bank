@@ -51,6 +51,7 @@
                 rounded="lg"
                 persistent-hint
                 clearable
+                hint="(ตัวอย่าง 01/09/2026)"
                 v-bind="props"
               />
             </template>
@@ -73,7 +74,8 @@
             density="comfortable"
             rounded="lg"
             persistent-hint
-            clearable
+            hint="(ตัวอย่าง 19:57)"
+            readonly
           />
         </v-col>
 
@@ -136,13 +138,14 @@
             type="number"
             step="0.01"
             label="1. Temp dryer inlet"
-            placeholder="120.50"
+            placeholder="00.00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="°C"
             persistent-hint
+            hint="(ตัวอย่าง 120.50)"
             clearable
           />
         </v-col>
@@ -154,12 +157,13 @@
             type="number"
             step="0.01"
             label="2. Temp dryer outlet"
-            placeholder="52.46"
+            placeholder="00.00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="°C"
+            hint="(ตัวอย่าง 52.46)"
             persistent-hint
             clearable
           />
@@ -172,13 +176,14 @@
             type="number"
             step="0.01"
             label="3. Temp fiber dryer"
-            placeholder="49.01"
+            placeholder="00.00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="°C"
             persistent-hint
+            hint="(ตัวอย่าง 49.01)"
             clearable
           />
         </v-col>
@@ -193,12 +198,13 @@
             type="number"
             step="0.01"
             label="4. Scalper"
-            placeholder="202.10"
+            placeholder="00.00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="mm"
+            hint="(ตัวอย่าง 202.10)"
             persistent-hint
             clearable
           />
@@ -211,12 +217,13 @@
             type="number"
             step="0.01"
             label="5. Bulk"
-            placeholder="81.00"
+            placeholder="00.00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="kg/m³"
+            hint="(ตัวอย่าง 81)"
             persistent-hint
             clearable
           />
@@ -229,13 +236,14 @@
             type="number"
             step="0.01"
             label="6. Temp ambient"
-            placeholder="30.20"
+            placeholder="00.00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="°C"
             persistent-hint
+            hint="(ตัวอย่าง 30.20)"
             clearable
           />
         </v-col>
@@ -248,13 +256,14 @@
             type="number"
             step="1"
             label="7. RH"
-            placeholder="59"
+            placeholder="00"
             persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
             suffix="%"
             persistent-hint
+            hint="(ตัวอย่าง 59)"
             clearable
           />
         </v-col>
@@ -350,11 +359,19 @@ const onDateSelected = (val: unknown) => {
   dateMenu.value = false;
 };
 
+// Helper: เวลาปัจจุบันในรูปแบบ HH:MM
+const getCurrentTime = (): string => {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
+};
+
 // ค่าเริ่มต้นของฟอร์ม (ตั้งค่าตัวอย่างตามรูปภาพ)
 const initialFormData: PredictMCFormData = {
   // 1. ข้อมูลทั่วไป
   date: "",
-  time: "",
+  time: getCurrentTime(),
   thickness: null,
   product: "",
 
@@ -391,7 +408,7 @@ const formattedMC3 = computed<string>(() => {
 const resetForm = () => {
   formData.value = {
     date: "",
-    time: "",
+    time: getCurrentTime(),
     thickness: null,
     product: "",
     tempDryerInlet: "",

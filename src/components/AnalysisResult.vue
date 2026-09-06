@@ -37,26 +37,23 @@
               <span class="section-title">Bulk Density</span>
             </div>
 
-            <div class="gauge-container mb-4">
-              <v-progress-circular
-                :model-value="bulkDensityPercent"
-                :size="130"
-                :width="12"
-                :color="isNormal ? 'success' : 'error'"
-                bg-color="#e2e8f0"
-              >
-                <div>
-                  <div class="gauge-value">{{ bulkDensityDisplay }}</div>
-                  <div :class="['gauge-status', isNormal ? 'gauge-status--normal' : 'gauge-status--critical']">
-                    <v-icon
-                      :icon="isNormal ? 'mdi-check-bold' : 'mdi-close-thick'"
-                      size="12"
-                      class="me-1"
-                    />
-                    <span>{{ isNormal ? 'ปกติ' : 'ผิดปกติ' }}</span>
-                  </div>
-                </div>
-              </v-progress-circular>
+            <div class="bd-icon-container mb-4">
+              <div :class="['bd-icon-wrapper', isNormal ? 'bd-icon-wrapper--normal' : 'bd-icon-wrapper--critical']">
+                <v-icon
+                  :icon="isNormal ? 'mdi-check-circle' : 'mdi-close-circle'"
+                  :color="isNormal ? 'success' : 'error'"
+                  size="72"
+                />
+              </div>
+              <div class="gauge-value mt-3">{{ bulkDensityDisplay }} kg/m³</div>
+              <div :class="['gauge-status mt-2', isNormal ? 'gauge-status--normal' : 'gauge-status--critical']">
+                <v-icon
+                  :icon="isNormal ? 'mdi-check-bold' : 'mdi-close-thick'"
+                  size="12"
+                  class="me-1"
+                />
+                <span>{{ isNormal ? 'ปกติ' : 'ผิดปกติ' }}</span>
+              </div>
             </div>
 
             <p class="result-desc d-flex align-center justify-center ga-1">
@@ -189,39 +186,154 @@
 
       <!-- Recommendation -->
       <v-col cols="12" md="4">
-        <v-card rounded="lg" elevation="0" class="result-card result-card--purple h-100">
-          <v-card-text class="pa-6">
+        <v-card rounded="lg" elevation="0" class="result-card h-100">
+          <v-card-text class="pa-5">
+            <!-- Header -->
             <div class="d-flex align-center ga-2 mb-4">
-              <div class="rec-icon">
-                <v-icon color="primary" size="20">mdi-lightbulb</v-icon>
+              <div class="rec-icon" :class="isNormal ? 'rec-icon--ok' : 'rec-icon--warn'">
+                <v-icon :color="isNormal ? 'success' : 'warning'" size="20">mdi-tune</v-icon>
               </div>
-              <span class="section-title">Recommendation</span>
+              <div>
+                <div class="section-title" style="font-size:14px;">
+                  {{ isNormal ? 'ค่าอยู่ในเกณฑ์ปกติ' : 'ควรปรับลดค่า Sifter เพื่อลด Bulk Density' }}
+                </div>
+                <div class="rec-subtitle">
+                  {{ isNormal ? 'ไม่จำเป็นต้องปรับค่า' : 'แนะนำให้ปรับค่าตามช่วงด้านล่างนี้' }}
+                </div>
+              </div>
             </div>
 
-            <p class="rec-text mb-4">
-              <template v-if="isNormal">
-                <v-icon color="success" size="18" class="me-1">mdi-check-circle</v-icon>
-                Bulk Density อยู่ในเกณฑ์ปกติ สามารถดำเนินการผลิตต่อได้ตามปกติ
-              </template>
-              <template v-else>
-                <v-icon color="error" size="18" class="me-1">mdi-close-circle</v-icon>
-                ค่า Bulk Density ผิดปกติ แนะนำให้ปรับ Control Sifter จาก
-                <strong>{{ result?.currentCombination }}</strong>
-                เป็น
-                <strong>{{ result?.recommendedControlSifter }}</strong>
-                (ลด {{ result?.reductionLevel }} คู่)
-              </template>
-            </p>
+            <!-- Adjustment Table -->
+            <div class="adj-table">
+              <!-- Table Header -->
+              <div class="adj-table-header">
+                <div class="adj-col adj-col--var">ตัวแปรที่ต้องปรับ</div>
+                <div class="adj-col adj-col--current">ค่าปัจจุบัน</div>
+                <div class="adj-col adj-col--range adj-col--highlight">ช่วงที่แนะนำ</div>
+                <div class="adj-col adj-col--change">การเปลี่ยนแปลง</div>
+              </div>
 
-            <v-btn
-              color="primary"
-              variant="flat"
-              block
-              rounded="lg"
-              prepend-icon="mdi-check-circle-outline"
-            >
-              Acknowledge
-            </v-btn>
+              <!-- Row: Circulate -->
+              <div class="adj-table-row">
+                <div class="adj-col adj-col--var">
+                  <v-icon size="16" color="primary" class="me-1">mdi-rotate-3d-variant</v-icon>
+                  <div>
+                    <div class="adj-var-name">Circulate</div>
+                    <div class="adj-var-sub">จัดการหมุนเวียน</div>
+                  </div>
+                </div>
+                <div class="adj-col adj-col--current adj-val--current">
+                  {{ result?.formData?.circulate ? `${result.formData.circulate} %` : '—' }}
+                </div>
+                <div class="adj-col adj-col--range adj-col--highlight">
+                  <template v-if="recommendedRanges">
+                    <div class="adj-val--range">
+                      {{ recommendedRanges.circulateMin }} – {{ recommendedRanges.circulateMax }} %
+                    </div>
+                    <div class="adj-val--hint">
+                      {{ diffDirection(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax) === 'same'
+                          ? 'คงเดิม'
+                          : `แนะนำ: ${diffDirection(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax) === 'down' ? 'ลดลง' : 'เพิ่มขึ้น'}ประมาณ ${formatDiff(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax)} %` }}
+                    </div>
+                  </template>
+                  <span v-else class="adj-val--ok">คงเดิม</span>
+                </div>
+                <div class="adj-col adj-col--change">
+                  <template v-if="recommendedRanges">
+                    <template v-if="diffDirection(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax) === 'down'">
+                      <span class="adj-change--down">ลดลง</span>
+                      <div class="adj-change--val">{{ formatDiff(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax) }} %</div>
+                      <v-icon color="success" size="16">mdi-arrow-down-bold</v-icon>
+                    </template>
+                    <template v-else-if="diffDirection(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax) === 'up'">
+                      <span class="adj-change--up">เพิ่มขึ้น</span>
+                      <div class="adj-change--val adj-change--val-up">{{ formatDiff(recommendedRanges.circulateDiffMin, recommendedRanges.circulateDiffMax) }} %</div>
+                      <v-icon color="warning" size="16">mdi-arrow-up-bold</v-icon>
+                    </template>
+                    <template v-else>
+                      <span class="adj-change--neutral">คงเดิม</span>
+                      <div class="adj-change--val">—</div>
+                    </template>
+                  </template>
+                  <span v-else class="adj-change--neutral">—</span>
+                </div>
+              </div>
+
+              <!-- Row: Pressure Control -->
+              <div class="adj-table-row">
+                <div class="adj-col adj-col--var">
+                  <v-icon size="16" color="primary" class="me-1">mdi-gauge</v-icon>
+                  <div>
+                    <div class="adj-var-name">Pressure</div>
+                    <div class="adj-var-sub">Control</div>
+                  </div>
+                </div>
+                <div class="adj-col adj-col--current adj-val--current">
+                  {{ result?.formData?.pressure ? `${result.formData.pressure} %` : '—' }}
+                </div>
+                <div class="adj-col adj-col--range adj-col--highlight">
+                  <template v-if="recommendedRanges">
+                    <div class="adj-val--range">
+                      {{ recommendedRanges.pressureMin.toFixed(1) }} – {{ recommendedRanges.pressureMax.toFixed(1) }} %
+                    </div>
+                    <div class="adj-val--hint">
+                      {{ diffDirection(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax) === 'same'
+                          ? 'คงเดิม'
+                          : `แนะนำ: ${diffDirection(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax) === 'down' ? 'ลดลง' : 'เพิ่มขึ้น'}ประมาณ ${formatDiff(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax)} %` }}
+                    </div>
+                  </template>
+                  <span v-else class="adj-val--ok">คงเดิม</span>
+                </div>
+                <div class="adj-col adj-col--change">
+                  <template v-if="recommendedRanges">
+                    <template v-if="diffDirection(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax) === 'down'">
+                      <span class="adj-change--down">ลดลง</span>
+                      <div class="adj-change--val">{{ formatDiff(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax) }} %</div>
+                      <v-icon color="success" size="16">mdi-arrow-down-bold</v-icon>
+                    </template>
+                    <template v-else-if="diffDirection(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax) === 'up'">
+                      <span class="adj-change--up">เพิ่มขึ้น</span>
+                      <div class="adj-change--val adj-change--val-up">{{ formatDiff(recommendedRanges.pressureDiffMin, recommendedRanges.pressureDiffMax) }} %</div>
+                      <v-icon color="warning" size="16">mdi-arrow-up-bold</v-icon>
+                    </template>
+                    <template v-else>
+                      <span class="adj-change--neutral">คงเดิม</span>
+                      <div class="adj-change--val">—</div>
+                    </template>
+                  </template>
+                  <span v-else class="adj-change--neutral">—</span>
+                </div>
+              </div>
+
+              <!-- Row: Damper -->
+              <div class="adj-table-row">
+                <div class="adj-col adj-col--var">
+                  <v-icon size="16" color="primary" class="me-1">mdi-expand-all</v-icon>
+                  <div>
+                    <div class="adj-var-name">Damper 1, 2</div>
+                  </div>
+                </div>
+                <div class="adj-col adj-col--current adj-val--current">
+                  {{ result?.formData?.damper1 != null ? `${result.formData.damper1} mm` : '—' }}
+                </div>
+                <div class="adj-col adj-col--range adj-col--highlight">
+                  <div class="adj-val--range" style="font-size:13px;">
+                    {{ result?.formData?.damper1 != null ? `${result.formData.damper1} mm` : '—' }}
+                  </div>
+                  <div class="adj-val--hint">(คงเดิม)</div>
+                </div>
+                <div class="adj-col adj-col--change">
+                  <span class="adj-change--neutral">คงเดิม</span>
+                  <div class="adj-change--val">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer note -->
+            <div class="rec-footer mt-3">
+              <v-icon size="14" color="info" class="me-1">mdi-information-outline</v-icon>
+              <span>หลังปรับแล้ว ให้ตรวจวัดค่า Bulk Density อีกครั้ง</span>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -232,6 +344,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { SifterAnalysisResult } from '@/types/machine'
+import { getRecommendedRanges, type RecommendedRanges } from '@/utils/sifter'
 
 const props = defineProps<{
   result: SifterAnalysisResult | null
@@ -260,6 +373,37 @@ const bulkDensityPercent = computed(() => {
   const bd = props.result.bulkDensity
   return Math.min(100, Math.max(0, ((bd - 39) / (52 - 39)) * 100))
 })
+
+/**
+ * คำนวณช่วงค่าที่แนะนำและ diff จาก recommendedControlSifter
+ * คืน null ถ้า normal หรือไม่มีข้อมูลพอ
+ */
+const recommendedRanges = computed((): RecommendedRanges | null => {
+  const r = props.result
+  if (!r || isNormal.value) return null
+  if (!r.recommendedControlSifter) return null
+
+  const circulate = parseFloat(r.formData?.circulate ?? '')
+  const pressure  = parseFloat(r.formData?.pressure ?? '')
+  if (isNaN(circulate) || isNaN(pressure)) return null
+
+  return getRecommendedRanges(r.recommendedControlSifter, circulate, pressure)
+})
+
+/** แสดงช่วง diff เป็น string เช่น "-5 – -2" หรือ "ลดลง 2 – 5" */
+function formatDiff(dMin: number, dMax: number): string {
+  const lo = Math.min(dMin, dMax)
+  const hi = Math.max(dMin, dMax)
+  return `${Math.abs(lo).toFixed(1)} – ${Math.abs(hi).toFixed(1)}`
+}
+
+/** ทิศทางการเปลี่ยนแปลง: negative = ลดลง, positive = เพิ่มขึ้น, 0 = คงเดิม */
+function diffDirection(dMin: number, dMax: number): 'down' | 'up' | 'same' {
+  const avg = (dMin + dMax) / 2
+  if (avg < -0.001) return 'down'
+  if (avg > 0.001) return 'up'
+  return 'same'
+}
 </script>
 
 <style scoped>
@@ -294,11 +438,33 @@ const bulkDensityPercent = computed(() => {
   color: #1e293b;
 }
 
-/* --- Gauge --- */
-.gauge-container {
+/* --- Bulk Density Icon --- */
+.bd-icon-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bd-icon-wrapper {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
+
+.bd-icon-wrapper--normal {
+  background: #dcfce7;
+  box-shadow: 0 0 0 8px #bbf7d0;
+}
+
+.bd-icon-wrapper--critical {
+  background: #ffe4e6;
+  box-shadow: 0 0 0 8px #fecdd3;
+}
+
+/* --- Gauge (legacy kept for gauge-value/gauge-status reuse) --- */
 
 .gauge-value {
   font-size: 26px;
@@ -400,16 +566,156 @@ const bulkDensityPercent = computed(() => {
 .rec-icon {
   width: 36px;
   height: 36px;
-  background: #ede9ff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-.rec-text {
+.rec-icon--ok   { background: #dcfce7; }
+.rec-icon--warn { background: #fef3c7; }
+
+.rec-subtitle {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
+/* --- Adjustment Table --- */
+.adj-table {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 11px;
+}
+
+.adj-table-header,
+.adj-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 2fr 1.4fr;
+  align-items: center;
+}
+
+.adj-table-header {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 700;
+  color: #64748b;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.adj-table-row {
+  border-bottom: 1px solid #f1f5f9;
+  min-height: 60px;
+}
+
+.adj-table-row:last-child {
+  border-bottom: none;
+}
+
+.adj-col {
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+
+.adj-col--var {
+  flex-direction: row;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.adj-col--current { text-align: center; align-items: center; }
+.adj-col--range   { text-align: center; align-items: center; }
+.adj-col--change  { text-align: center; align-items: center; }
+
+.adj-col--highlight {
+  background: #f0fdf4;
+  border-left: 2px solid #22c55e;
+  border-right: 2px solid #22c55e;
+}
+
+.adj-var-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.adj-var-sub {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.adj-val--current {
   font-size: 13px;
-  color: #475569;
-  line-height: 1.6;
+  font-weight: 800;
+  color: #000000;
+}
+
+.adj-val--range {
+  font-size: 12px;
+  font-weight: 800;
+  color: #16a34a;
+  text-align: center;
+}
+
+.adj-val--hint {
+  font-size: 9px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.adj-val--ok {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.adj-change--down {
+  font-size: 10px;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.adj-change--val {
+  font-size: 11px;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.adj-change--neutral {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.adj-change--up {
+  font-size: 10px;
+  font-weight: 700;
+  color: #d97706;
+}
+
+.adj-change--val-up {
+  color: #d97706;
+}
+
+/* --- Footer note --- */
+.rec-footer {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  color: #64748b;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  padding: 6px 10px;
+  line-height: 1.5;
 }
 </style>

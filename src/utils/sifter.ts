@@ -181,3 +181,73 @@ export function analyzeSifter(
     recommendedControlSifter,
   }
 }
+
+// ─── Range Helpers ─────────────────────────────────────────────────────────────
+
+/**
+ * คืนช่วง Circulate (min, max) จาก CirculateGroup
+ * Group 1 → 55–57
+ * Group 2 → 58–61
+ * Group 3 → 62–65
+ */
+export function getCirculateRange(group: CirculateGroup): { min: number; max: number } {
+  if (group === 1) return { min: 55, max: 57 }
+  if (group === 2) return { min: 58, max: 61 }
+  return { min: 62, max: 65 }
+}
+
+/**
+ * คืนช่วง Pressure Control (min, max) จาก PressureGroup
+ * A → 10.0–13.9
+ * B → 14.0–17.9
+ * C → 18.0–20.0
+ */
+export function getPressureRange(group: PressureGroup): { min: number; max: number } {
+  if (group === 'A') return { min: 10.0, max: 13.9 }
+  if (group === 'B') return { min: 14.0, max: 17.9 }
+  return { min: 18.0, max: 20.0 }
+}
+
+export interface RecommendedRanges {
+  /** ช่วง Circulate ที่แนะนำ */
+  circulateMin: number
+  circulateMax: number
+  /** ช่วง Pressure ที่แนะนำ */
+  pressureMin: number
+  pressureMax: number
+  /** diff Circulate: ค่าติดลบหมายถึงลดลง */
+  circulateDiffMin: number
+  circulateDiffMax: number
+  /** diff Pressure: ค่าติดลบหมายถึงลดลง */
+  pressureDiffMin: number
+  pressureDiffMax: number
+}
+
+/**
+ * แปลง recommendedControlSifter (เช่น "2B") กลับเป็นช่วงค่าที่แนะนำ
+ * และ diff เทียบกับค่า circulate / pressure ปัจจุบัน
+ */
+export function getRecommendedRanges(
+  recommendedCombination: Combination,
+  currentCirculate: number,
+  currentPressure: number,
+): RecommendedRanges {
+  // แยก CirculateGroup และ PressureGroup จาก Combination string เช่น "2B"
+  const circulateGroup = Number(recommendedCombination[0]) as CirculateGroup
+  const pressureGroup = recommendedCombination[1] as PressureGroup
+
+  const circulateRange = getCirculateRange(circulateGroup)
+  const pressureRange = getPressureRange(pressureGroup)
+
+  return {
+    circulateMin: circulateRange.min,
+    circulateMax: circulateRange.max,
+    pressureMin: pressureRange.min,
+    pressureMax: pressureRange.max,
+    // diff: range - current (ติดลบ = ลดลง)
+    circulateDiffMin: circulateRange.min - currentCirculate,
+    circulateDiffMax: circulateRange.max - currentCirculate,
+    pressureDiffMin: pressureRange.min - currentPressure,
+    pressureDiffMax: pressureRange.max - currentPressure,
+  }
+}

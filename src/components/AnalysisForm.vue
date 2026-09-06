@@ -43,7 +43,7 @@
               variant="outlined"
               density="comfortable"
               rounded="lg"
-              hint="Ex. 377"
+              hint="(ตัวอย่าง 377)"
               persistent-hint
               clearable
             />
@@ -107,9 +107,21 @@
             density="comfortable"
             rounded="lg"
             suffix="g"
-            hint="Ex. 2.00 "
+            hint="(กรอกค่า 1.95-2.05)"
             persistent-hint
             clearable
+            :rules="[
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) >= 1.95) ||
+                'ต้องไม่น้อยกว่า 1.95',
+              (v) =>
+                v === '' ||
+                v === null ||
+                (!isNaN(v) && Number(v) <= 2.05) ||
+                'ต้องไม่เกิน 2.05',
+            ]"
           />
         </v-col>
 
@@ -119,7 +131,7 @@
             v-model="formData.volume"
             label="Volume (ปริมาตร)"
             suffix="ml"
-            hint="Ex. 41"
+            hint="(กรอกค่า 40-50)"
             persistent-placeholder
             persistent-hint
             clearable
@@ -154,7 +166,7 @@
             density="comfortable"
             rounded="lg"
             suffix="%"
-            hint="Ex. 10.25"
+            hint="(ตัวอย่าง 10.25)"
             persistent-hint
             clearable
           />
@@ -184,7 +196,7 @@
             density="comfortable"
             rounded="lg"
             suffix="%"
-            hint="Ex. 65"
+            hint="(กรอกค่า 55-65)"
             persistent-hint
             clearable
             :rules="[
@@ -215,7 +227,7 @@
             density="comfortable"
             rounded="lg"
             suffix="%"
-            hint="Ex. 10"
+            hint="(กรอกค่า 10-20)"
             persistent-hint
             clearable
             :rules="[

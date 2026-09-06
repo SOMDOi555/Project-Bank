@@ -49,7 +49,7 @@
                 class="d-flex align-center ga-1 text-caption text-grey-darken-2"
               >
                 <v-icon size="16" color="grey-darken-1">mdi-factory</v-icon>
-                <span>Plant : MDF Line 1</span>
+                <span>Plant : FRT-MDF</span>
               </div>
               <v-divider vertical class="my-1" />
               <div
