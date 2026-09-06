@@ -9,6 +9,13 @@
 
       <v-row align="center" justify="space-between" class="welcome-content">
         <v-col cols="12" md="8" lg="7">
+          <div class="d-flex align-center ga-2 mb-1">
+            <v-chip size="small" color="primary" variant="flat" class="font-weight-bold">
+              <v-icon start size="14">mdi-water-thermometer</v-icon>
+              Forming Machine
+            </v-chip>
+            <span class="text-caption text-grey-darken-1 font-weight-medium">%MC Analysis</span>
+          </div>
           <div
             class="text-headline-medium font-weight-bold text-grey-darken-4 mb-1"
           >
@@ -25,11 +32,17 @@
 
     <!-- Form -->
     <v-form ref="formRef" @submit.prevent="handleSubmit">
-      <!-- หมวดที่ 1: ข้อมูลทั่วไป (ไม่มี Badge ตามคำขอ) -->
-      <div class="mb-6 border rounded-lg pa-4">
-        <v-row class="mb-1">
-          <v-col cols="12">
-            <div class="text-title-medium font-weight-bold">1. ข้อมูลทั่วไป</div>
+      <!-- หมวดที่ 1: ข้อมูลทั่วไป -->
+      <div class="form-section-card mb-6 border rounded-xl pa-5 bg-white">
+        <v-row class="mb-2">
+          <v-col cols="12" class="d-flex align-center ga-2">
+            <div class="section-icon-box bg-blue-lighten-5">
+              <v-icon color="primary" size="20">mdi-clipboard-text-outline</v-icon>
+            </div>
+            <div>
+              <div class="text-title-medium font-weight-bold text-grey-darken-4">1. ข้อมูลทั่วไป</div>
+              <div class="text-caption text-grey-darken-1">วันที่ เวลา และข้อมูลผลิตภัณฑ์</div>
+            </div>
           </v-col>
         </v-row>
 
@@ -124,12 +137,18 @@
         </v-row>
       </div>
 
-      <!-- หมวดที่ 2: ข้อมูลวิเคราะห์ (ไม่มี Badge ตามคำขอ) -->
-      <div class="mb-6 border rounded-lg pa-4">
-        <v-row class="mb-1">
-          <v-col cols="12">
-            <div class="text-title-medium font-weight-bold">
-              2. ข้อมูลวิเคราะห์
+      <!-- หมวดที่ 2: ข้อมูลวิเคราะห์ -->
+      <div class="form-section-card mb-6 border rounded-xl pa-5 bg-white">
+        <v-row class="mb-2">
+          <v-col cols="12" class="d-flex align-center ga-2">
+            <div class="section-icon-box bg-teal-lighten-5">
+              <v-icon color="teal-darken-2" size="20">mdi-chart-bell-curve-cumulative</v-icon>
+            </div>
+            <div>
+              <div class="text-title-medium font-weight-bold text-grey-darken-4">
+                2. ข้อมูลวิเคราะห์
+              </div>
+              <div class="text-caption text-grey-darken-1">พารามิเตอร์อุณหภูมิและการผลิตของ Dryer & Forming</div>
             </div>
           </v-col>
         </v-row>
@@ -292,7 +311,7 @@
             variant="outlined"
             rounded="lg"
             size="large"
-            class="w-100 w-sm-auto"
+            class="w-100 w-sm-auto px-6 font-weight-medium"
             prepend-icon="mdi-chevron-left"
             @click="emit('back')"
           >
@@ -302,7 +321,7 @@
             variant="outlined"
             rounded="lg"
             size="large"
-            class="w-100 w-sm-auto"
+            class="w-100 w-sm-auto px-6 font-weight-medium"
             prepend-icon="mdi-reload"
             @click="resetForm"
           >
@@ -312,7 +331,7 @@
             variant="flat"
             rounded="lg"
             size="large"
-            class="bg-primary w-100 w-sm-auto"
+            class="bg-primary w-100 w-sm-auto px-8 font-weight-bold shadow-btn"
             prepend-icon="mdi-google-analytics"
             @click="handleSubmit"
           >
@@ -541,6 +560,41 @@ const handleSubmit = async () => {
     linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 25%);
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
+}
+
+/* --- Form Section Card Polish --- */
+.form-section-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-section-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.section-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.shadow-btn {
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.shadow-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
+}
+
+.shadow-btn:active {
+  transform: translateY(0);
 }
 
 .green-wave-accent {

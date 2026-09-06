@@ -9,6 +9,13 @@
 
       <v-row align="center" justify="space-between" class="welcome-content">
         <v-col cols="12" md="8" lg="7">
+          <div class="d-flex align-center ga-2 mb-1">
+            <v-chip size="small" color="primary" variant="flat" class="font-weight-bold">
+              <v-icon start size="14">mdi-filter-cog</v-icon>
+              {{ machine.name }}
+            </v-chip>
+            <span class="text-caption text-grey-darken-1 font-weight-medium">Machine Analysis</span>
+          </div>
           <div
             class="text-headline-medium font-weight-bold text-grey-darken-4 mb-1"
           >
@@ -17,7 +24,7 @@
           <div
             class="text-title-medium font-weight-bold text-grey-darken-3 mb-2"
           >
-            กรอกข้อมูลสำหรับวิเคราะห์ข้อมูล
+            กรอกข้อมูลสำหรับวิเคราะห์ข้อมูล Sifter
           </div>
         </v-col>
       </v-row>
@@ -26,10 +33,16 @@
     <!-- Form -->
     <v-form ref="formRef" @submit.prevent="handleSubmit">
       <!-- กลุ่มที่ 1: Product -->
-      <div class="mb-6 border rounded-lg pa-4">
-        <v-row>
-          <v-col cols="12">
-            <div class="text-title-medium font-weight-bold">1. Product</div>
+      <div class="form-section-card mb-6 border rounded-xl pa-5 bg-white">
+        <v-row class="mb-2">
+          <v-col cols="12" class="d-flex align-center ga-2">
+            <div class="section-icon-box bg-blue-lighten-5">
+              <v-icon color="primary" size="20">mdi-package-variant-closed</v-icon>
+            </div>
+            <div>
+              <div class="text-title-medium font-weight-bold text-grey-darken-4">1. Product</div>
+              <div class="text-caption text-grey-darken-1">ข้อมูลชนิดผลิตภัณฑ์และล็อตการผลิต</div>
+            </div>
           </v-col>
         </v-row>
 
@@ -89,11 +102,17 @@
       </div>
 
       <!-- กลุ่มที่ 2: Fiber Condition -->
-      <div class="mb-6 border rounded-lg pa-4">
-        <v-row>
-          <v-col cols="12">
-            <div class="text-title-medium font-weight-bold">
-              2. Fiber Condition
+      <div class="form-section-card mb-6 border rounded-xl pa-5 bg-white">
+        <v-row class="mb-2">
+          <v-col cols="12" class="d-flex align-center ga-2">
+            <div class="section-icon-box bg-teal-lighten-5">
+              <v-icon color="teal-darken-2" size="20">mdi-flask-outline</v-icon>
+            </div>
+            <div>
+              <div class="text-title-medium font-weight-bold text-grey-darken-4">
+                2. Fiber Condition
+              </div>
+              <div class="text-caption text-grey-darken-1">สภาวะและคุณสมบัติของเส้นใยไม้</div>
             </div>
           </v-col>
         </v-row>
@@ -105,7 +124,7 @@
               v-model="formData.weight"
               type="number"
               step="0.01"
-              label="Weight(น้ำหนัก)"
+              label="Weight (น้ำหนัก)"
               placeholder="00.00"
               persistent-placeholder
               variant="outlined"
@@ -138,6 +157,7 @@
               label="Volume (ปริมาตร)"
               suffix="ml"
               hint="(กรอกค่า 40-50)"
+              placeholder="00"
               persistent-placeholder
               persistent-hint
               clearable
@@ -183,11 +203,17 @@
       </div>
 
       <!-- กลุ่มที่ 3: Sifter condition -->
-      <div class="mb-6 border rounded-lg pa-4">
-        <v-row>
-          <v-col cols="12">
-            <div class="text-title-medium font-weight-bold">
-              3. Sifter condition
+      <div class="form-section-card mb-6 border rounded-xl pa-5 bg-white">
+        <v-row class="mb-2">
+          <v-col cols="12" class="d-flex align-center ga-2">
+            <div class="section-icon-box bg-amber-lighten-5">
+              <v-icon color="amber-darken-3" size="20">mdi-tune-vertical</v-icon>
+            </div>
+            <div>
+              <div class="text-title-medium font-weight-bold text-grey-darken-4">
+                3. Sifter condition
+              </div>
+              <div class="text-caption text-grey-darken-1">พารามิเตอร์การตั้งค่าเครื่อง Sifter</div>
             </div>
           </v-col>
         </v-row>
@@ -291,44 +317,44 @@
         </v-row>
       </div>
 
-    <!-- ปุ่ม Action: Responsive เต็มจอบนมือถือ / กะทัดรัดชิดขวาบนคอม -->
-    <v-row class="mt-4">
-      <v-col
-        cols="12"
-        class="d-flex flex-column flex-sm-row justify-sm-end ga-3"
-      >
-        <v-btn
-          variant="outlined"
-          rounded="lg"
-          size="large"
-          class="w-100 w-sm-auto"
-          prepend-icon="mdi-chevron-left"
-          @click="emit('back')"
+      <!-- ปุ่ม Action: Responsive เต็มจอบนมือถือ / กะทัดรัดชิดขวาบนคอม -->
+      <v-row class="mt-4">
+        <v-col
+          cols="12"
+          class="d-flex flex-column flex-sm-row justify-sm-end ga-3"
         >
-          ย้อนกลับ
-        </v-btn>
-        <v-btn
-          variant="outlined"
-          rounded="lg"
-          size="large"
-          class="w-100 w-sm-auto"
-          prepend-icon="mdi-reload"
-          @click="resetForm"
-        >
-          ล้างค่า
-        </v-btn>
-        <v-btn
-          variant="flat"
-          rounded="lg"
-          size="large"
-          class="bg-primary w-100 w-sm-auto"
-          prepend-icon="mdi-google-analytics"
-          @click="handleSubmit"
-        >
-          วิเคราะห์ข้อมูล
-        </v-btn>
-      </v-col>
-    </v-row>
+          <v-btn
+            variant="outlined"
+            rounded="lg"
+            size="large"
+            class="w-100 w-sm-auto px-6 font-weight-medium"
+            prepend-icon="mdi-chevron-left"
+            @click="emit('back')"
+          >
+            ย้อนกลับ
+          </v-btn>
+          <v-btn
+            variant="outlined"
+            rounded="lg"
+            size="large"
+            class="w-100 w-sm-auto px-6 font-weight-medium"
+            prepend-icon="mdi-reload"
+            @click="resetForm"
+          >
+            ล้างค่า
+          </v-btn>
+          <v-btn
+            variant="flat"
+            rounded="lg"
+            size="large"
+            class="bg-primary w-100 w-sm-auto px-8 font-weight-bold shadow-btn"
+            prepend-icon="mdi-google-analytics"
+            @click="handleSubmit"
+          >
+            วิเคราะห์ข้อมูล
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-form>
   </div>
 </template>
@@ -497,6 +523,41 @@ const handleSubmit = async () => {
     linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 25%);
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
+}
+
+/* --- Form Section Card Polish --- */
+.form-section-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.form-section-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.section-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.shadow-btn {
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.shadow-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
+}
+
+.shadow-btn:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {

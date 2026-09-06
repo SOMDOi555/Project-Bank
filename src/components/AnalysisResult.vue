@@ -14,22 +14,12 @@
           </div>
         </div>
       </div>
-      <v-btn
-        variant="outlined"
-        color="grey-darken-2"
-        rounded="lg"
-        prepend-icon="mdi-arrow-left"
-        size="small"
-        @click="emit('back')"
-      >
-        กลับไปวิเคราะห์ใหม่
-      </v-btn>
     </div>
 
     <!-- Top Cards Row: Bulk Density, Current Sifter, Recommendation -->
     <v-row class="mb-6">
       <!-- Bulk Density Result -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="0" class="result-card h-100">
           <v-card-text class="pa-6 text-center">
             <div class="d-flex align-center ga-2 mb-4">
@@ -72,7 +62,7 @@
       </v-col>
 
       <!-- Analysis Input Data (Form Data Summary) -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="6">
         <v-card rounded="lg" elevation="0" class="result-card h-100">
           <v-card-text class="pa-6">
             <div class="d-flex align-center justify-space-between mb-4">
@@ -183,9 +173,10 @@
           </v-card-text>
         </v-card>
       </v-col>
-
+    </v-row>
+    <v-row>
       <!-- Recommendation -->
-      <v-col cols="12" md="4">
+      <v-col cols="12">
         <v-card rounded="lg" elevation="0" class="result-card h-100">
           <v-card-text class="pa-5">
             <!-- Header -->
@@ -194,7 +185,7 @@
                 <v-icon :color="isNormal ? 'success' : 'warning'" size="20">mdi-tune</v-icon>
               </div>
               <div>
-                <div class="section-title" style="font-size:14px;">
+                <div class="section-title" style="font-size:16px;">
                   {{ isNormal ? 'ค่าอยู่ในเกณฑ์ปกติ' : 'ควรปรับลดค่า Sifter เพื่อลด Bulk Density' }}
                 </div>
                 <div class="rec-subtitle">
@@ -204,8 +195,9 @@
             </div>
 
             <!-- Adjustment Table -->
-            <div class="adj-table">
-              <!-- Table Header -->
+            <div class="adj-table-wrapper">
+              <div class="adj-table">
+                <!-- Table Header -->
               <div class="adj-table-header">
                 <div class="adj-col adj-col--var">ตัวแปรที่ต้องปรับ</div>
                 <div class="adj-col adj-col--current">ค่าปัจจุบัน</div>
@@ -317,7 +309,7 @@
                   {{ result?.formData?.damper1 != null ? `${result.formData.damper1} mm` : '—' }}
                 </div>
                 <div class="adj-col adj-col--range adj-col--highlight">
-                  <div class="adj-val--range" style="font-size:13px;">
+                  <div class="adj-val--range">
                     {{ result?.formData?.damper1 != null ? `${result.formData.damper1} mm` : '—' }}
                   </div>
                   <div class="adj-val--hint">(คงเดิม)</div>
@@ -328,8 +320,9 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Footer note -->
+          <!-- Footer note -->
             <div class="rec-footer mt-3">
               <v-icon size="14" color="info" class="me-1">mdi-information-outline</v-icon>
               <span>หลังปรับแล้ว ให้ตรวจวัดค่า Bulk Density อีกครั้ง</span>
@@ -338,13 +331,37 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Bottom Actions -->
+    <v-row class="mt-4 mb-2">
+      <v-col cols="12" class="d-flex justify-center justify-sm-end">
+        <v-btn
+          variant="flat"
+          color="primary"
+          rounded="lg"
+          size="large"
+          prepend-icon="mdi-arrow-left"
+          class="w-100 w-sm-auto px-8 font-weight-bold"
+          @click="emit('back')"
+        >
+          กลับไปวิเคราะห์ใหม่
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import type { SifterAnalysisResult } from '@/types/machine'
 import { getRecommendedRanges, type RecommendedRanges } from '@/utils/sifter'
+
+onMounted(() => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  // Scroll main content container if Vuetify uses internal scrolling
+  document.querySelector('.v-main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+})
 
 const props = defineProps<{
   result: SifterAnalysisResult | null
@@ -564,8 +581,8 @@ function diffDirection(dMin: number, dMax: number): 'down' | 'up' | 'same' {
 
 /* --- Recommendation --- */
 .rec-icon {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -577,17 +594,23 @@ function diffDirection(dMin: number, dMax: number): 'down' | 'up' | 'same' {
 .rec-icon--warn { background: #fef3c7; }
 
 .rec-subtitle {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-top: 1px;
+  font-size: 16px;
+  color: #64748b;
+  margin-top: 2px;
 }
 
 /* --- Adjustment Table --- */
+.adj-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .adj-table {
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  overflow: hidden;
-  font-size: 11px;
+  font-size: 16px;
+  min-width: 580px;
 }
 
 .adj-table-header,
@@ -602,7 +625,7 @@ function diffDirection(dMin: number, dMax: number): 'down' | 'up' | 'same' {
   border-bottom: 1px solid #e2e8f0;
   font-weight: 700;
   color: #64748b;
-  font-size: 10px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -642,62 +665,62 @@ function diffDirection(dMin: number, dMax: number): 'down' | 'up' | 'same' {
 }
 
 .adj-var-name {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 700;
   color: #1e293b;
   line-height: 1.2;
 }
 
 .adj-var-sub {
-  font-size: 10px;
+  font-size: 13px;
   color: #94a3b8;
 }
 
 .adj-val--current {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 800;
   color: #000000;
 }
 
 .adj-val--range {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 800;
   color: #16a34a;
   text-align: center;
 }
 
 .adj-val--hint {
-  font-size: 9px;
+  font-size: 12px;
   color: #64748b;
   text-align: center;
   line-height: 1.3;
 }
 
 .adj-val--ok {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 600;
   color: #64748b;
 }
 
 .adj-change--down {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
   color: #16a34a;
 }
 
 .adj-change--val {
-  font-size: 11px;
+  font-size: 16px;
   font-weight: 800;
   color: #16a34a;
 }
 
 .adj-change--neutral {
-  font-size: 10px;
+  font-size: 14px;
   color: #94a3b8;
 }
 
 .adj-change--up {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
   color: #d97706;
 }
@@ -710,12 +733,48 @@ function diffDirection(dMin: number, dMax: number): 'down' | 'up' | 'same' {
 .rec-footer {
   display: flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 14px;
   color: #64748b;
   background: #f0f9ff;
   border: 1px solid #bae6fd;
   border-radius: 6px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   line-height: 1.5;
+}
+
+.shadow-btn {
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.shadow-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45) !important;
+}
+
+.shadow-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .adj-table {
+    min-width: 520px;
+    font-size: 14px;
+  }
+  .adj-table-header {
+    font-size: 12px;
+  }
+  .adj-var-name {
+    font-size: 14px;
+  }
+  .adj-val--current,
+  .adj-val--range,
+  .adj-val--ok,
+  .adj-change--val {
+    font-size: 14px;
+  }
+  .rec-subtitle {
+    font-size: 14px;
+  }
 }
 </style>

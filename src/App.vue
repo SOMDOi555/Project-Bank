@@ -60,6 +60,12 @@
 
       <v-spacer />
 
+      <!-- Thai Date & Time Display -->
+      <div class="d-none d-sm-flex align-center ga-2 text-grey-darken-2 mr-3 px-3 py-1">
+        <v-icon size="18" color="primary">mdi-clock-outline</v-icon>
+        <span class="text-caption font-weight-medium">{{ currentThaiDateTime }}</span>
+      </div>
+
       <!-- Top Bar Actions -->
       <v-btn icon variant="text" color="grey-darken-1" class="mr-1">
         <v-icon>mdi-bell-outline</v-icon>
@@ -77,12 +83,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const drawer = ref(true);
 const route = useRoute();
 const router = useRouter();
+
+// วันที่และเวลาปัจจุบันแบบไทย
+const currentThaiDateTime = ref("");
+const updateThaiDateTime = () => {
+  const now = new Date();
+  currentThaiDateTime.value = now.toLocaleDateString("th-TH", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+};
+
+let timer: ReturnType<typeof setInterval> | null = null;
+onMounted(() => {
+  updateThaiDateTime();
+  timer = setInterval(updateThaiDateTime, 1000);
+});
+
+onUnmounted(() => {
+  if (timer) clearInterval(timer);
+});
 
 const menuItems = [
   {

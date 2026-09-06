@@ -42,9 +42,17 @@ const goBack = () => {
   router.push("/");
 };
 
+// เลื่อนหน้าจอกลับขึ้นด้านบนสุด
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.querySelector('.v-main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+};
+
 // กลับจากหน้าแสดงผลลัพธ์มาที่ฟอร์ม
 const handleBackToForm = () => {
   showResult.value = false;
+  scrollToTop();
 };
 
 // ส่งข้อมูลวิเคราะห์
@@ -60,6 +68,7 @@ const handleAnalyze = async (data: PredictMCFormData) => {
 
   sessionStorage.setItem("predictMCResult", JSON.stringify(result));
   showResult.value = true;
+  scrollToTop();
 };
 </script>
 

@@ -36,7 +36,7 @@
 
             <!-- แถบสถานะ (Status Bar) -->
             <div
-              class="status-bar d-inline-flex align-center flex-wrap ga-2 ga-sm-4 px-4 py-2 rounded-lg bg-white border"
+              class="status-bar d-inline-flex align-center flex-wrap ga-2 ga-sm-4 px-3 px-sm-4 py-2 rounded-lg bg-white border"
             >
               <div class="d-flex align-center ga-2">
                 <v-icon size="16" color="success">mdi-gauge-full</v-icon>
@@ -44,14 +44,14 @@
                   >ระบบทำงานปกติ</span
                 >
               </div>
-              <v-divider vertical class="my-1" />
+              <v-divider vertical class="d-none d-sm-block my-1" />
               <div
                 class="d-flex align-center ga-1 text-caption text-grey-darken-2"
               >
                 <v-icon size="16" color="grey-darken-1">mdi-factory</v-icon>
                 <span>Plant : FRT-MDF</span>
               </div>
-              <v-divider vertical class="my-1" />
+              <v-divider vertical class="d-none d-sm-block my-1" />
               <div
                 class="d-flex align-center ga-1 text-caption text-grey-darken-2"
               >

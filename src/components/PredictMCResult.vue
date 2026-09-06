@@ -14,16 +14,6 @@
           </div>
         </div>
       </div>
-      <v-btn
-        variant="outlined"
-        color="grey-darken-2"
-        rounded="lg"
-        prepend-icon="mdi-arrow-left"
-        size="large"
-        @click="emit('back')"
-      >
-        กลับไปวิเคราะห์ใหม่
-      </v-btn>
     </div>
 
     <!-- Cards Row: แสดงเฉพาะค่าเปอร์เซ็นต์ MC ที่คำนวณได้ และ ค่า Input ที่กรอกเข้าไป -->
@@ -155,13 +145,36 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- Bottom Actions -->
+    <v-row class="mt-4 mb-2">
+      <v-col cols="12" class="d-flex justify-center justify-sm-end">
+        <v-btn
+          variant="flat"
+          color="primary"
+          rounded="lg"
+          size="large"
+          prepend-icon="mdi-arrow-left"
+          class="w-100 w-sm-auto px-8 font-weight-bold"
+          @click="emit('back')"
+        >
+          กลับไปวิเคราะห์ใหม่
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { formatMC } from "@/utils/predictMC";
 import type { PredictMCAnalysisResult } from "@/types/predictMC";
+
+onMounted(() => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.querySelector('.v-main')?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+});
 
 interface Props {
   result: PredictMCAnalysisResult | null;
