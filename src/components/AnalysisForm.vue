@@ -361,10 +361,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { VForm } from "vuetify/components";
 import { useSwal } from "@/plugins/sweetalert";
 import type { Machine, AnalysisFormData } from "@/types/machine";
 
-const formRef = ref<{ validate: () => Promise<{ valid: boolean }> } | null>(null);
+const formRef = ref<InstanceType<typeof VForm> | null>(null);
 
 defineProps<{
   machine: Machine;

@@ -1,3 +1,5 @@
+import type { Combination } from '@/utils/sifter';
+
 export interface Machine {
   id: number;
   name: string;
@@ -19,8 +21,8 @@ export interface AnalysisFormData {
   // 3. Sifter condition
   circulate: string;
   pressure: string;
-  damper1: number | string | null;
-  damper2: number | string | null;
+  damper1: number | null;
+  damper2: number | null;
 }
 
 export interface SifterAnalysisResult {
@@ -30,9 +32,9 @@ export interface SifterAnalysisResult {
   // Sifter computed results
   bulkDensity: number;
   bulkDensityStatus: 'normal' | 'abnormal';
-  currentCombination: string | null;
+  currentCombination: Combination | null;
   reductionLevel: number | null;
-  recommendedControlSifter: string | null;
+  recommendedControlSifter: Combination | null;
 }
 
 export interface NewMachinePayload {
