@@ -1,26 +1,39 @@
 <template>
-  <div class="predict-mc-form-view">
-    <!-- Header -->
-    <div class="text-headline-medium font-weight-bold mb-3">
-      Predict %MC Forming
-    </div>
-    <div class="text-title-medium font-weight-bold mb-2">
-      กรอกข้อมูลสำหรับทำนายความชื้น (%MC)
+  <div>
+    <!-- Header Section (สไตล์เดียวกับหน้า index พร้อมภาพโรงงานและ Opacity) -->
+    <div class="welcome-section">
+      <!-- ภาพโรงงานพื้นหลัง พร้อมปรับ Opacity และเฟดขอบเนียนตามแบบหน้า index -->
+      <div class="factory-bg-container">
+        <img src="/factory2.jpg" alt="MDF Factory Plant" class="factory-img" />
+      </div>
+
+      <v-row align="center" justify="space-between" class="welcome-content">
+        <v-col cols="12" md="8" lg="7">
+          <div
+            class="text-headline-medium font-weight-bold text-grey-darken-4 mb-1"
+          >
+            Predict %MC Forming
+          </div>
+          <div
+            class="text-title-medium font-weight-bold text-grey-darken-3 mb-2"
+          >
+            กรอกข้อมูลสำหรับทำนายความชื้น (%MC)
+          </div>
+        </v-col>
+      </v-row>
     </div>
 
     <!-- หมวดที่ 1: ข้อมูลทั่วไป (ไม่มี Badge ตามคำขอ) -->
-    <div class="mb-6">
+    <div class="mb-6 border rounded-lg pa-4">
       <v-row class="mb-1">
         <v-col cols="12">
-          <div class="text-title-medium font-weight-bold">
-            1. ข้อมูลทั่วไป
-          </div>
+          <div class="text-title-medium font-weight-bold">1. ข้อมูลทั่วไป</div>
         </v-col>
       </v-row>
 
       <v-row>
         <!-- 1. Date -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="3">
           <v-menu
             v-model="dateMenu"
             :close-on-content-click="false"
@@ -36,7 +49,6 @@
                 variant="outlined"
                 density="comfortable"
                 rounded="lg"
-                hint="(ตัวอย่าง 01/09/2026)"
                 persistent-hint
                 clearable
                 v-bind="props"
@@ -51,7 +63,7 @@
         </v-col>
 
         <!-- 2. Time -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="3">
           <v-text-field
             v-model="formData.time"
             label="2. Time"
@@ -60,14 +72,13 @@
             variant="outlined"
             density="comfortable"
             rounded="lg"
-            hint="(ตัวอย่าง 19:57)"
             persistent-hint
             clearable
           />
         </v-col>
 
         <!-- 3. Thickness (Required *) -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="3">
           <v-select
             v-model="formData.thickness"
             :items="thicknessOptions"
@@ -81,28 +92,33 @@
             :rules="[(v) => !!v || 'กรุณาเลือก Thickness']"
           >
             <template #label>
-              <span>3. Thickness <span class="text-error font-weight-bold">*</span></span>
+              <span
+                >3. Thickness
+                <span class="text-error font-weight-bold">*</span></span
+              >
             </template>
           </v-select>
         </v-col>
 
-        <!-- 4. Product (Fix) -->
-        <v-col cols="12" sm="6" md="3">
+        <!-- 4. Product -->
+        <v-col cols="12" md="3">
           <v-select
             v-model="formData.product"
             :items="productOptions"
             label="4. Product"
+            placeholder="HMR AA"
+            persistent-placeholder
             variant="outlined"
             density="comfortable"
             rounded="lg"
-            readonly
+            clearable
           />
         </v-col>
       </v-row>
     </div>
 
     <!-- หมวดที่ 2: ข้อมูลวิเคราะห์ (ไม่มี Badge ตามคำขอ) -->
-    <div class="mb-6">
+    <div class="mb-6 border rounded-lg pa-4">
       <v-row class="mb-1">
         <v-col cols="12">
           <div class="text-title-medium font-weight-bold">
@@ -114,7 +130,7 @@
       <!-- Row 1: Temp Dryer Inputs (3 คอลัมน์) -->
       <v-row>
         <!-- 1. Temp dryer inlet -->
-        <v-col cols="12" sm="6" md="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.tempDryerInlet"
             type="number"
@@ -126,14 +142,13 @@
             density="comfortable"
             rounded="lg"
             suffix="°C"
-            hint="(ตัวอย่าง 120.5)"
             persistent-hint
             clearable
           />
         </v-col>
 
         <!-- 2. Temp dryer outlet -->
-        <v-col cols="12" sm="6" md="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.tempDryerOutlet"
             type="number"
@@ -145,14 +160,13 @@
             density="comfortable"
             rounded="lg"
             suffix="°C"
-            hint="(ตัวอย่าง 52.46)"
             persistent-hint
             clearable
           />
         </v-col>
 
         <!-- 3. Temp fiber dryer -->
-        <v-col cols="12" sm="6" md="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.tempFiberDryer"
             type="number"
@@ -164,7 +178,6 @@
             density="comfortable"
             rounded="lg"
             suffix="°C"
-            hint="(ตัวอย่าง 49.01)"
             persistent-hint
             clearable
           />
@@ -174,7 +187,7 @@
       <!-- Row 2: Scalper, Bulk, Ambient, RH (4 คอลัมน์) -->
       <v-row>
         <!-- 4. Scalper -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.scalper"
             type="number"
@@ -186,14 +199,13 @@
             density="comfortable"
             rounded="lg"
             suffix="mm"
-            hint="(ตัวอย่าง 202.1)"
             persistent-hint
             clearable
           />
         </v-col>
 
         <!-- 5. Bulk -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.bulk"
             type="number"
@@ -205,14 +217,13 @@
             density="comfortable"
             rounded="lg"
             suffix="kg/m³"
-            hint="(ตัวอย่าง 81)"
             persistent-hint
             clearable
           />
         </v-col>
 
         <!-- 6. Temp ambient -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.tempAmbient"
             type="number"
@@ -224,14 +235,14 @@
             density="comfortable"
             rounded="lg"
             suffix="°C"
-            hint="(ตัวอย่าง 30.2)"
             persistent-hint
             clearable
           />
         </v-col>
-
+      </v-row>
+      <v-row>
         <!-- 7. RH -->
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="formData.rh"
             type="number"
@@ -243,7 +254,6 @@
             density="comfortable"
             rounded="lg"
             suffix="%"
-            hint="(ตัวอย่าง 59)"
             persistent-hint
             clearable
           />
@@ -251,13 +261,17 @@
       </v-row>
     </div>
 
-    <!-- ปุ่ม Action ด้านล่างขวา (Responsive) -->
+    <!-- ปุ่ม Action: Responsive เต็มจอบนมือถือ / กะทัดรัดชิดขวาบนคอม -->
     <v-row class="mt-4">
-      <v-col cols="12" class="d-flex justify-end flex-wrap ga-3">
+      <v-col
+        cols="12"
+        class="d-flex flex-column flex-sm-row justify-sm-end ga-3"
+      >
         <v-btn
           variant="outlined"
           rounded="lg"
           size="large"
+          class="w-100 w-sm-auto"
           prepend-icon="mdi-chevron-left"
           @click="emit('back')"
         >
@@ -267,6 +281,7 @@
           variant="outlined"
           rounded="lg"
           size="large"
+          class="w-100 w-sm-auto"
           prepend-icon="mdi-reload"
           @click="resetForm"
         >
@@ -276,7 +291,7 @@
           variant="flat"
           rounded="lg"
           size="large"
-          class="bg-primary"
+          class="bg-primary w-100 w-sm-auto"
           prepend-icon="mdi-google-analytics"
           @click="handleSubmit"
         >
@@ -288,10 +303,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useSwal } from "@/plugins/sweetalert";
 import { calculateMCFromFormData, formatMC } from "@/utils/predictMC";
 import type { PredictMCFormData } from "@/types/predictMC";
+
+// นาฬิกาแสดงเวลาปัจจุบันสำหรับ Status Bar
+const currentTime = ref("");
+const updateTime = () => {
+  const now = new Date();
+  currentTime.value = now.toLocaleTimeString("th-TH", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+onMounted(() => {
+  updateTime();
+  const timer = setInterval(updateTime, 1000);
+  onUnmounted(() => clearInterval(timer));
+});
 
 const emit = defineEmits<{
   (e: "back"): void;
@@ -322,19 +353,19 @@ const onDateSelected = (val: unknown) => {
 // ค่าเริ่มต้นของฟอร์ม (ตั้งค่าตัวอย่างตามรูปภาพ)
 const initialFormData: PredictMCFormData = {
   // 1. ข้อมูลทั่วไป
-  date: "01/09/2026",
-  time: "19:57",
-  thickness: 15,
-  product: "HMR AA",
+  date: "",
+  time: "",
+  thickness: null,
+  product: "",
 
   // 2. ข้อมูลวิเคราะห์
-  tempDryerInlet: "120.50",
-  tempDryerOutlet: "52.46",
-  tempFiberDryer: "49.01",
-  scalper: "202.10",
-  bulk: "81.00",
-  tempAmbient: "30.20",
-  rh: "59",
+  tempDryerInlet: "",
+  tempDryerOutlet: "",
+  tempFiberDryer: "",
+  scalper: "",
+  bulk: "",
+  tempAmbient: "",
+  rh: "",
 };
 
 const formData = ref<PredictMCFormData>({ ...initialFormData });
@@ -362,7 +393,7 @@ const resetForm = () => {
     date: "",
     time: "",
     thickness: null,
-    product: "HMR AA",
+    product: "",
     tempDryerInlet: "",
     tempDryerOutlet: "",
     tempFiberDryer: "",
@@ -371,16 +402,140 @@ const resetForm = () => {
     tempAmbient: "",
     rh: "",
   };
-  swal.toast("ล้างค่าเรียบร้อย", "info");
+  swal.toast("ล้างค่าเรียบร้อย", "success");
+};
+
+// ตรวจสอบความถูกต้องและครบถ้วนของข้อมูล
+const validateForm = (): boolean => {
+  if (!formData.value.date) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Date (วันที่)");
+    return false;
+  }
+  if (!formData.value.time) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Time (เวลา)");
+    return false;
+  }
+  if (!formData.value.thickness) {
+    swal.warning("แจ้งเตือน", "กรุณาเลือก Thickness");
+    return false;
+  }
+  if (!formData.value.product) {
+    swal.warning("แจ้งเตือน", "กรุณาเลือก Product");
+    return false;
+  }
+  if (!formData.value.tempDryerInlet) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Temp dryer inlet");
+    return false;
+  }
+  if (!formData.value.tempDryerOutlet) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Temp dryer outlet");
+    return false;
+  }
+  if (!formData.value.tempFiberDryer) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Temp fiber dryer");
+    return false;
+  }
+  if (!formData.value.scalper) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Scalper");
+    return false;
+  }
+  if (!formData.value.bulk) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Bulk");
+    return false;
+  }
+  if (!formData.value.tempAmbient) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก Temp ambient");
+    return false;
+  }
+  if (!formData.value.rh) {
+    swal.warning("แจ้งเตือน", "กรุณากรอก RH");
+    return false;
+  }
+  return true;
 };
 
 // ส่งข้อมูลวิเคราะห์
 const handleSubmit = () => {
-  if (!formData.value.thickness) {
-    swal.warning("กรุณากรอกข้อมูล", "กรุณาเลือก Thickness ก่อนทำการวิเคราะห์");
+  if (!validateForm()) {
     return;
   }
   emit("submit", { ...formData.value }, predictedMC.value);
 };
 </script>
 
+<style scoped>
+.welcome-section {
+  position: relative;
+  min-height: 180px;
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 1;
+}
+
+.factory-bg-container {
+  position: absolute;
+  top: -15px;
+  right: 0;
+  width: 50%;
+  max-width: 540px;
+  height: calc(100% + 20px);
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.factory-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 65%;
+  opacity: 0.45;
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 35%),
+    linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 25%);
+  mask-image:
+    linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 1) 35%),
+    linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 1) 25%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.green-wave-accent {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 65%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-leaf {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+.leaf-1 {
+  top: 35%;
+  left: 25%;
+  transform: rotate(-20deg);
+}
+
+.leaf-2 {
+  top: 60%;
+  left: 15%;
+  transform: rotate(40deg);
+  opacity: 0.55;
+}
+
+@media (max-width: 768px) {
+  .factory-bg-container {
+    width: 65%;
+    opacity: 0.35;
+  }
+}
+</style>

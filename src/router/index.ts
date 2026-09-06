@@ -23,11 +23,6 @@ const router = createRouter({
       name: 'PredictMC',
       component: () => import('@/pages/predict-mc.vue'),
     },
-    {
-      path: '/analysis-result',
-      name: 'AnalysisResult',
-      component: () => import('@/pages/analysis-result.vue'),
-    },
   ],
 })
 

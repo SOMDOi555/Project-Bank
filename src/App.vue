@@ -87,7 +87,7 @@ const router = useRouter();
 const menuItems = [
   {
     title: "หน้าหลัก",
-    icon: "mdi-home-outline",
+    icon: "mdi-home-circle",
     to: "/",
     parent: null,
   },
@@ -99,7 +99,7 @@ const menuItems = [
   },
   {
     title: "Predict %MC Forming",
-    icon: "mdi-water-percent",
+    icon: "mdi-water-thermometer",
     to: "/predict-mc",
     parent: null,
   },

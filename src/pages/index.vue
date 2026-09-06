@@ -26,7 +26,7 @@
               Fiber Control Center
             </div>
             <p
-              class="text-body-1 text-grey-darken-1 mb-4"
+              class="text-title-medium text-grey-darken-3 mb-4"
               style="max-width: 620px; line-height: 1.6"
             >
               ศูนย์รวมเครื่องมือสำหรับควบคุม วิเคราะห์ และคาดการณ์
@@ -118,7 +118,7 @@
           >
             <!-- กล่องแสดงรูปทรงกลม -->
             <div class="card-media-wrapper mb-5">
-              <div class="card-circle bg-pink-lighten-5">
+              <div class="card-circle bg-green-lighten-5">
                 <img src="/MC.png" alt="Predict %MC Forming" class="card-img" />
               </div>
             </div>
@@ -162,7 +162,7 @@
           >
             <!-- กล่องแสดงรูปทรงกลม -->
             <div class="card-media-wrapper mb-5">
-              <div class="card-circle bg-amber-lighten-5">
+              <div class="card-circle bg-green-lighten-5">
                 <img src="/kuster.png" alt="Kuster Press" class="card-img" />
               </div>
             </div>
