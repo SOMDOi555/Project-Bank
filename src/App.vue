@@ -3,7 +3,6 @@
     <!-- Sidebar Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
-      permanent
       :width="220"
       color="#1E293B"
       elevation="0"
@@ -85,8 +84,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 
-const drawer = ref(true);
+const { mobile } = useDisplay();
+const drawer = ref(!mobile.value);
 const route = useRoute();
 const router = useRouter();
 

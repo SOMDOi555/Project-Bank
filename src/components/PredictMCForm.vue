@@ -49,34 +49,18 @@
         <v-row>
           <!-- 1. Date -->
           <v-col cols="12" md="3">
-            <v-menu
-              v-model="dateMenu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              min-width="auto"
-            >
-              <template #activator="{ props }">
-                <v-text-field
-                  v-model="formData.date"
-                  label="1. Date"
-                  placeholder="01/09/2026"
-                  persistent-placeholder
-                  variant="outlined"
-                  density="comfortable"
-                  rounded="lg"
-                  persistent-hint
-                  clearable
-                  hint="(ตัวอย่าง 01/09/2026)"
-                  v-bind="props"
-                  :rules="[(v) => !!v || 'กรุณากรอก Date (วันที่)']"
-                />
-              </template>
-              <v-date-picker
-                v-model="selectedDate"
-                color="primary"
-                @update:model-value="onDateSelected"
-              />
-            </v-menu>
+            <v-text-field
+              v-model="formData.date"
+              label="1. Date"
+              variant="outlined"
+              density="comfortable"
+              rounded="lg"
+              readonly
+              prepend-inner-icon="mdi-calendar"
+              hint="วันที่ปัจจุบัน (อัตโนมัติ)"
+              persistent-hint
+              :rules="[(v) => !!v || 'กรุณากรอก Date (วันที่)']"
+            />
           </v-col>
 
           <!-- 2. Time -->
@@ -403,9 +387,17 @@ const getCurrentTime = (): string => {
 };
 
 // ค่าเริ่มต้นของฟอร์ม (ตั้งค่าตัวอย่างตามรูปภาพ)
+const getTodayDate = (): string => {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const year = now.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const initialFormData: PredictMCFormData = {
   // 1. ข้อมูลทั่วไป
-  date: "",
+  date: getTodayDate(),
   time: getCurrentTime(),
   thickness: null,
   product: "",
@@ -442,7 +434,7 @@ const formattedMC3 = computed<string>(() => {
 // ล้างค่าฟอร์ม
 const resetForm = () => {
   formData.value = {
-    date: "",
+    date: getTodayDate(),
     time: getCurrentTime(),
     thickness: null,
     product: "",
